@@ -1,0 +1,5003 @@
+
+01_dataset_exploration.ipynb.ipynb
+01_dataset_exploration.ipynb.ipynb_
+
+[ ]
+!pip install pandas numpy matplotlib seaborn scikit-learn kagglehub
+Requirement already satisfied: pandas in /usr/local/lib/python3.12/dist-packages (2.2.2)
+Requirement already satisfied: numpy in /usr/local/lib/python3.12/dist-packages (2.0.2)
+Requirement already satisfied: matplotlib in /usr/local/lib/python3.12/dist-packages (3.10.0)
+Requirement already satisfied: seaborn in /usr/local/lib/python3.12/dist-packages (0.13.2)
+Requirement already satisfied: scikit-learn in /usr/local/lib/python3.12/dist-packages (1.6.1)
+Requirement already satisfied: kagglehub in /usr/local/lib/python3.12/dist-packages (1.0.0)
+Requirement already satisfied: python-dateutil>=2.8.2 in /usr/local/lib/python3.12/dist-packages (from pandas) (2.9.0.post0)
+Requirement already satisfied: pytz>=2020.1 in /usr/local/lib/python3.12/dist-packages (from pandas) (2025.2)
+Requirement already satisfied: tzdata>=2022.7 in /usr/local/lib/python3.12/dist-packages (from pandas) (2026.1)
+Requirement already satisfied: contourpy>=1.0.1 in /usr/local/lib/python3.12/dist-packages (from matplotlib) (1.3.3)
+Requirement already satisfied: cycler>=0.10 in /usr/local/lib/python3.12/dist-packages (from matplotlib) (0.12.1)
+Requirement already satisfied: fonttools>=4.22.0 in /usr/local/lib/python3.12/dist-packages (from matplotlib) (4.62.1)
+Requirement already satisfied: kiwisolver>=1.3.1 in /usr/local/lib/python3.12/dist-packages (from matplotlib) (1.5.0)
+Requirement already satisfied: packaging>=20.0 in /usr/local/lib/python3.12/dist-packages (from matplotlib) (26.1)
+Requirement already satisfied: pillow>=8 in /usr/local/lib/python3.12/dist-packages (from matplotlib) (11.3.0)
+Requirement already satisfied: pyparsing>=2.3.1 in /usr/local/lib/python3.12/dist-packages (from matplotlib) (3.3.2)
+Requirement already satisfied: scipy>=1.6.0 in /usr/local/lib/python3.12/dist-packages (from scikit-learn) (1.16.3)
+Requirement already satisfied: joblib>=1.2.0 in /usr/local/lib/python3.12/dist-packages (from scikit-learn) (1.5.3)
+Requirement already satisfied: threadpoolctl>=3.1.0 in /usr/local/lib/python3.12/dist-packages (from scikit-learn) (3.6.0)
+Requirement already satisfied: kagglesdk<1.0,>=0.1.14 in /usr/local/lib/python3.12/dist-packages (from kagglehub) (0.1.20)
+Requirement already satisfied: pyyaml in /usr/local/lib/python3.12/dist-packages (from kagglehub) (6.0.3)
+Requirement already satisfied: requests in /usr/local/lib/python3.12/dist-packages (from kagglehub) (2.32.4)
+Requirement already satisfied: tqdm in /usr/local/lib/python3.12/dist-packages (from kagglehub) (4.67.3)
+Requirement already satisfied: protobuf in /usr/local/lib/python3.12/dist-packages (from kagglesdk<1.0,>=0.1.14->kagglehub) (5.29.6)
+Requirement already satisfied: six>=1.5 in /usr/local/lib/python3.12/dist-packages (from python-dateutil>=2.8.2->pandas) (1.17.0)
+Requirement already satisfied: charset_normalizer<4,>=2 in /usr/local/lib/python3.12/dist-packages (from requests->kagglehub) (3.4.7)
+Requirement already satisfied: idna<4,>=2.5 in /usr/local/lib/python3.12/dist-packages (from requests->kagglehub) (3.13)
+Requirement already satisfied: urllib3<3,>=1.21.1 in /usr/local/lib/python3.12/dist-packages (from requests->kagglehub) (2.5.0)
+Requirement already satisfied: certifi>=2017.4.17 in /usr/local/lib/python3.12/dist-packages (from requests->kagglehub) (2026.4.22)
+
+[ ]
+import kagglehub
+
+# Download dataset
+path = kagglehub.dataset_download("himadri07/ciciot2023")
+
+print("Dataset path:", path)
+Using Colab cache for faster access to the 'ciciot2023' dataset.
+Dataset path: /kaggle/input/ciciot2023
+
+[ ]
+import os
+
+files = os.listdir(path)
+
+print(files[:20])
+['CICIOT23']
+
+[ ]
+import os
+
+for item in os.listdir(path):
+    print(item)
+CICIOT23
+
+[ ]
+dataset_folder = os.path.join(path, "CICIOT23")
+
+inside_files = os.listdir(dataset_folder)
+
+print(inside_files[:20])
+['test', 'train', 'validation']
+
+[ ]
+train_path = os.path.join(dataset_folder, "train")
+
+train_files = os.listdir(train_path)
+
+print(train_files[:10])
+['train.csv']
+
+[ ]
+import pandas as pd
+
+train_file = os.path.join(train_path, "train.csv")
+
+df = pd.read_csv(train_file)
+
+print(df.head())
+   flow_duration  Header_Length  Protocol Type  Duration       Rate  \
+0       0.000000         757.00           6.00     64.00  23.671858   
+1       0.000000          54.00           6.00     64.00   2.393046   
+2       0.033982          56.78           6.11     64.64   1.192715   
+3       0.000000           0.00          47.00     64.00   9.841972   
+4       3.944828         108.00           6.00     64.00   0.506993   
+
+       Srate  Drate  fin_flag_number  syn_flag_number  rst_flag_number  ...  \
+0  23.671858    0.0              0.0              0.0              0.0  ...   
+1   2.393046    0.0              0.0              1.0              0.0  ...   
+2   1.192715    0.0              0.0              0.0              0.0  ...   
+3   9.841972    0.0              0.0              0.0              0.0  ...   
+4   0.506993    0.0              0.0              1.0              0.0  ...   
+
+          Std  Tot size           IAT  Number   Magnitue      Radius  \
+0  538.470740    944.00  8.334058e+07     9.5  41.845546  761.456760   
+1    0.000000     54.00  8.309327e+07     9.5  10.392305    0.000000   
+2    1.727526     54.29  8.333086e+07     9.5  10.462813    2.445286   
+3    0.000000    592.00  8.370278e+07     9.5  34.409301    0.000000   
+4    0.000000     54.00  8.297270e+07     9.5  10.392305    0.000000   
+
+      Covariance  Variance  Weight                   label  
+0  305219.322301      0.95  141.55  DDoS-ACK_Fragmentation  
+1       0.000000      0.00  141.55          DDoS-SYN_Flood  
+2      16.853118      0.19  141.55       DDoS-PSHACK_Flood  
+3       0.000000      0.00  141.55      Mirai-greeth_flood  
+4       0.000000      0.00  141.55           DoS-SYN_Flood  
+
+[5 rows x 47 columns]
+
+[ ]
+print(df.shape)
+(5491971, 47)
+
+[ ]
+print(df.info())
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 5491971 entries, 0 to 5491970
+Data columns (total 47 columns):
+ #   Column           Dtype  
+---  ------           -----  
+ 0   flow_duration    float64
+ 1   Header_Length    float64
+ 2   Protocol Type    float64
+ 3   Duration         float64
+ 4   Rate             float64
+ 5   Srate            float64
+ 6   Drate            float64
+ 7   fin_flag_number  float64
+ 8   syn_flag_number  float64
+ 9   rst_flag_number  float64
+ 10  psh_flag_number  float64
+ 11  ack_flag_number  float64
+ 12  ece_flag_number  float64
+ 13  cwr_flag_number  float64
+ 14  ack_count        float64
+ 15  syn_count        float64
+ 16  fin_count        float64
+ 17  urg_count        float64
+ 18  rst_count        float64
+ 19  HTTP             float64
+ 20  HTTPS            float64
+ 21  DNS              float64
+ 22  Telnet           float64
+ 23  SMTP             float64
+ 24  SSH              float64
+ 25  IRC              float64
+ 26  TCP              float64
+ 27  UDP              float64
+ 28  DHCP             float64
+ 29  ARP              float64
+ 30  ICMP             float64
+ 31  IPv              float64
+ 32  LLC              float64
+ 33  Tot sum          float64
+ 34  Min              float64
+ 35  Max              float64
+ 36  AVG              float64
+ 37  Std              float64
+ 38  Tot size         float64
+ 39  IAT              float64
+ 40  Number           float64
+ 41  Magnitue         float64
+ 42  Radius           float64
+ 43  Covariance       float64
+ 44  Variance         float64
+ 45  Weight           float64
+ 46  label            object 
+dtypes: float64(46), object(1)
+memory usage: 1.9+ GB
+None
+
+[ ]
+print(df['label'].value_counts())
+label
+DDoS-ICMP_Flood            848088
+DDoS-UDP_Flood             637558
+DDoS-TCP_Flood             528499
+DDoS-PSHACK_Flood          481254
+DDoS-SYN_Flood             478653
+DDoS-RSTFINFlood           475441
+DDoS-SynonymousIP_Flood    422083
+DoS-UDP_Flood              390422
+DoS-TCP_Flood              314174
+DoS-SYN_Flood              237573
+BenignTraffic              129538
+Mirai-greeth_flood         116133
+Mirai-udpplain             104814
+Mirai-greip_flood           88821
+DDoS-ICMP_Fragmentation     53046
+MITM-ArpSpoofing            36316
+DDoS-UDP_Fragmentation      34169
+DDoS-ACK_Fragmentation      33581
+DNS_Spoofing                21214
+Recon-HostDiscovery         15737
+Recon-OSScan                11587
+Recon-PortScan               9648
+DoS-HTTP_Flood               8487
+VulnerabilityScan            4396
+DDoS-HTTP_Flood              3371
+DDoS-SlowLoris               2757
+DictionaryBruteForce         1541
+BrowserHijacking              665
+CommandInjection              620
+SqlInjection                  590
+XSS                           414
+Backdoor_Malware              392
+Recon-PingSweep               249
+Uploading_Attack              140
+Name: count, dtype: int64
+
+[ ]
+# Binary label construction
+
+df['binary_label'] = df['label'].apply(
+    lambda x: 0 if x == 'BenignTraffic' else 1
+)
+
+# Display distribution
+print(df['binary_label'].value_counts())
+binary_label
+1    5362433
+0     129538
+Name: count, dtype: int64
+
+[ ]
+# Separate benign and attack traffic
+
+benign_df = df[df['binary_label'] == 0]
+attack_df = df[df['binary_label'] == 1]
+
+# Random balanced sampling
+
+benign_sample = benign_df.sample(
+    n=50000,
+    random_state=42
+)
+
+attack_sample = attack_df.sample(
+    n=50000,
+    random_state=42
+)
+
+# Combine both classes
+
+balanced_df = pd.concat([
+    benign_sample,
+    attack_sample
+])
+
+# Shuffle dataset
+
+balanced_df = balanced_df.sample(
+    frac=1,
+    random_state=42
+)
+
+# Reset index
+
+balanced_df = balanced_df.reset_index(drop=True)
+
+# Verify distribution
+
+print(balanced_df['binary_label'].value_counts())
+binary_label
+1    50000
+0    50000
+Name: count, dtype: int64
+
+[ ]
+# Inspect variance of numerical features
+
+feature_variances = balanced_df.var(
+    numeric_only=True
+).sort_values()
+
+print(feature_variances.head(15))
+ece_flag_number    0.000000e+00
+cwr_flag_number    0.000000e+00
+SMTP               0.000000e+00
+Telnet             0.000000e+00
+IRC                0.000000e+00
+DHCP               0.000000e+00
+Drate              4.495237e-09
+SSH                1.999980e-05
+ARP                1.799694e-04
+IPv                4.398108e-04
+LLC                4.398108e-04
+DNS                1.058887e-03
+HTTP               4.149859e-02
+fin_flag_number    4.367554e-02
+rst_flag_number    4.568742e-02
+dtype: float64
+
+[ ]
+# Remove zero-variance features
+
+zero_variance_features = [
+    'ece_flag_number',
+    'cwr_flag_number',
+    'SMTP',
+    'Telnet',
+    'IRC',
+    'DHCP'
+]
+
+balanced_df = balanced_df.drop(
+    columns=zero_variance_features
+)
+
+# Verify new shape
+
+print(balanced_df.shape)
+(100000, 42)
+
+[ ]
+# Compute correlation matrix
+
+correlation_matrix = balanced_df.corr(
+    numeric_only=True
+)
+
+# Display highly correlated features
+
+high_corr_pairs = []
+
+threshold = 0.90
+
+for i in range(len(correlation_matrix.columns)):
+    for j in range(i):
+        corr_value = correlation_matrix.iloc[i, j]
+
+        if abs(corr_value) > threshold:
+            feature_1 = correlation_matrix.columns[i]
+            feature_2 = correlation_matrix.columns[j]
+
+            high_corr_pairs.append(
+                (feature_1, feature_2, corr_value)
+            )
+
+# Print results
+
+for pair in high_corr_pairs:
+    print(pair)
+('Srate', 'Rate', np.float64(1.0))
+('rst_flag_number', 'fin_flag_number', np.float64(0.9747880400715033))
+('rst_count', 'Header_Length', np.float64(0.9621471999996234))
+('LLC', 'IPv', np.float64(1.0))
+('Std', 'Max', np.float64(0.9737851822806172))
+('Number', 'IAT', np.float64(0.9984641249553855))
+('Magnitue', 'AVG', np.float64(0.9700299115565348))
+('Radius', 'Max', np.float64(0.9737565515854781))
+('Radius', 'Std', np.float64(0.9999378924722391))
+('Weight', 'IAT', np.float64(0.9987071308272676))
+('Weight', 'Number', np.float64(0.9999426766786326))
+
+[ ]
+# Remove highly correlated redundant features
+
+redundant_features = [
+    'Srate',
+    'LLC',
+    'Radius',
+    'Weight',
+    'Magnitue'
+]
+
+balanced_df = balanced_df.drop(
+    columns=redundant_features
+)
+
+# Verify shape
+
+print(balanced_df.shape)
+(100000, 37)
+
+[ ]
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+
+# Separate features and labels
+
+X = balanced_df.drop(
+    columns=['label', 'binary_label']
+)
+
+y = balanced_df['binary_label']
+
+# Train-test split
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X,
+    y,
+    test_size=0.2,
+    random_state=42,
+    stratify=y
+)
+
+# Standardization
+
+scaler = StandardScaler()
+
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+# Verify shapes
+
+print(X_train_scaled.shape)
+print(X_test_scaled.shape)
+(80000, 35)
+(20000, 35)
+
+[ ]
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import (
+    accuracy_score,
+    precision_score,
+    recall_score,
+    f1_score,
+    classification_report
+)
+
+# Initialize model
+
+rf_model = RandomForestClassifier(
+    n_estimators=100,
+    random_state=42,
+    n_jobs=-1
+)
+
+# Train model
+
+rf_model.fit(X_train_scaled, y_train)
+
+# Predictions
+
+y_pred = rf_model.predict(X_test_scaled)
+
+# Evaluation
+
+accuracy = accuracy_score(y_test, y_pred)
+precision = precision_score(y_test, y_pred)
+recall = recall_score(y_test, y_pred)
+f1 = f1_score(y_test, y_pred)
+
+# Print results
+
+print(f"Accuracy : {accuracy:.4f}")
+print(f"Precision: {precision:.4f}")
+print(f"Recall   : {recall:.4f}")
+print(f"F1-Score : {f1:.4f}")
+Accuracy : 0.9968
+Precision: 0.9995
+Recall   : 0.9940
+F1-Score : 0.9967
+
+[ ]
+import pandas as pd
+
+# Feature importance extraction
+
+feature_importance = pd.DataFrame({
+    'Feature': X.columns,
+    'Importance': rf_model.feature_importances_
+})
+
+# Sort descending
+
+feature_importance = feature_importance.sort_values(
+    by='Importance',
+    ascending=False
+)
+
+# Display top features
+
+print(feature_importance.head(15))
+          Feature  Importance
+15      rst_count    0.198981
+14      urg_count    0.156750
+28            AVG    0.112745
+34       Variance    0.098668
+30       Tot size    0.084039
+0   flow_duration    0.049661
+29            Std    0.049514
+33     Covariance    0.047000
+1   Header_Length    0.034206
+31            IAT    0.029193
+27            Max    0.026781
+25        Tot sum    0.024004
+3        Duration    0.021867
+2   Protocol Type    0.013433
+17          HTTPS    0.013262
+
+[ ]
+# Select top 20 important features
+
+top_features = feature_importance[
+    'Feature'
+].head(20).tolist()
+
+print(top_features)
+['rst_count', 'urg_count', 'AVG', 'Variance', 'Tot size', 'flow_duration', 'Std', 'Covariance', 'Header_Length', 'IAT', 'Max', 'Tot sum', 'Duration', 'Protocol Type', 'HTTPS', 'Number', 'ack_flag_number', 'Min', 'Rate', 'UDP']
+
+[ ]
+# Create reduced feature dataset
+
+X_reduced = balanced_df[top_features]
+
+y_reduced = balanced_df['binary_label']
+
+# Train-test split
+
+X_train_r, X_test_r, y_train_r, y_test_r = train_test_split(
+    X_reduced,
+    y_reduced,
+    test_size=0.2,
+    random_state=42,
+    stratify=y_reduced
+)
+
+# Standardization
+
+scaler_reduced = StandardScaler()
+
+X_train_r_scaled = scaler_reduced.fit_transform(X_train_r)
+X_test_r_scaled = scaler_reduced.transform(X_test_r)
+
+# Verify shapes
+
+print(X_train_r_scaled.shape)
+print(X_test_r_scaled.shape)
+(80000, 20)
+(20000, 20)
+
+[ ]
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import (
+    accuracy_score,
+    precision_score,
+    recall_score,
+    f1_score
+)
+
+# Initialize reduced-feature model
+
+rf_reduced = RandomForestClassifier(
+    n_estimators=100,
+    random_state=42,
+    n_jobs=-1
+)
+
+# Train model
+
+rf_reduced.fit(
+    X_train_r_scaled,
+    y_train_r
+)
+
+# Predictions
+
+y_pred_r = rf_reduced.predict(
+    X_test_r_scaled
+)
+
+# Evaluation
+
+accuracy_r = accuracy_score(
+    y_test_r,
+    y_pred_r
+)
+
+precision_r = precision_score(
+    y_test_r,
+    y_pred_r
+)
+
+recall_r = recall_score(
+    y_test_r,
+    y_pred_r
+)
+
+f1_r = f1_score(
+    y_test_r,
+    y_pred_r
+)
+
+# Print results
+
+print(f"Reduced Accuracy : {accuracy_r:.4f}")
+print(f"Reduced Precision: {precision_r:.4f}")
+print(f"Reduced Recall   : {recall_r:.4f}")
+print(f"Reduced F1-Score : {f1_r:.4f}")
+Reduced Accuracy : 0.9969
+Reduced Precision: 0.9993
+Reduced Recall   : 0.9944
+Reduced F1-Score : 0.9968
+
+[ ]
+!pip install tensorflow
+Requirement already satisfied: tensorflow in /usr/local/lib/python3.12/dist-packages (2.20.0)
+Requirement already satisfied: absl-py>=1.0.0 in /usr/local/lib/python3.12/dist-packages (from tensorflow) (1.4.0)
+Requirement already satisfied: astunparse>=1.6.0 in /usr/local/lib/python3.12/dist-packages (from tensorflow) (1.6.3)
+Requirement already satisfied: flatbuffers>=24.3.25 in /usr/local/lib/python3.12/dist-packages (from tensorflow) (25.12.19)
+Requirement already satisfied: gast!=0.5.0,!=0.5.1,!=0.5.2,>=0.2.1 in /usr/local/lib/python3.12/dist-packages (from tensorflow) (0.7.0)
+Requirement already satisfied: google_pasta>=0.1.1 in /usr/local/lib/python3.12/dist-packages (from tensorflow) (0.2.0)
+Requirement already satisfied: libclang>=13.0.0 in /usr/local/lib/python3.12/dist-packages (from tensorflow) (18.1.1)
+Requirement already satisfied: opt_einsum>=2.3.2 in /usr/local/lib/python3.12/dist-packages (from tensorflow) (3.4.0)
+Requirement already satisfied: packaging in /usr/local/lib/python3.12/dist-packages (from tensorflow) (26.1)
+Requirement already satisfied: protobuf>=5.28.0 in /usr/local/lib/python3.12/dist-packages (from tensorflow) (5.29.6)
+Requirement already satisfied: requests<3,>=2.21.0 in /usr/local/lib/python3.12/dist-packages (from tensorflow) (2.32.4)
+Requirement already satisfied: setuptools in /usr/local/lib/python3.12/dist-packages (from tensorflow) (75.2.0)
+Requirement already satisfied: six>=1.12.0 in /usr/local/lib/python3.12/dist-packages (from tensorflow) (1.17.0)
+Requirement already satisfied: termcolor>=1.1.0 in /usr/local/lib/python3.12/dist-packages (from tensorflow) (3.3.0)
+Requirement already satisfied: typing_extensions>=3.6.6 in /usr/local/lib/python3.12/dist-packages (from tensorflow) (4.15.0)
+Requirement already satisfied: wrapt>=1.11.0 in /usr/local/lib/python3.12/dist-packages (from tensorflow) (2.1.2)
+Requirement already satisfied: grpcio<2.0,>=1.24.3 in /usr/local/lib/python3.12/dist-packages (from tensorflow) (1.80.0)
+Requirement already satisfied: tensorboard~=2.20.0 in /usr/local/lib/python3.12/dist-packages (from tensorflow) (2.20.0)
+Requirement already satisfied: keras>=3.10.0 in /usr/local/lib/python3.12/dist-packages (from tensorflow) (3.13.2)
+Requirement already satisfied: numpy>=1.26.0 in /usr/local/lib/python3.12/dist-packages (from tensorflow) (2.0.2)
+Requirement already satisfied: h5py>=3.11.0 in /usr/local/lib/python3.12/dist-packages (from tensorflow) (3.16.0)
+Requirement already satisfied: ml_dtypes<1.0.0,>=0.5.1 in /usr/local/lib/python3.12/dist-packages (from tensorflow) (0.5.4)
+Requirement already satisfied: wheel<1.0,>=0.23.0 in /usr/local/lib/python3.12/dist-packages (from astunparse>=1.6.0->tensorflow) (0.47.0)
+Requirement already satisfied: rich in /usr/local/lib/python3.12/dist-packages (from keras>=3.10.0->tensorflow) (13.9.4)
+Requirement already satisfied: namex in /usr/local/lib/python3.12/dist-packages (from keras>=3.10.0->tensorflow) (0.1.0)
+Requirement already satisfied: optree in /usr/local/lib/python3.12/dist-packages (from keras>=3.10.0->tensorflow) (0.19.0)
+Requirement already satisfied: charset_normalizer<4,>=2 in /usr/local/lib/python3.12/dist-packages (from requests<3,>=2.21.0->tensorflow) (3.4.7)
+Requirement already satisfied: idna<4,>=2.5 in /usr/local/lib/python3.12/dist-packages (from requests<3,>=2.21.0->tensorflow) (3.13)
+Requirement already satisfied: urllib3<3,>=1.21.1 in /usr/local/lib/python3.12/dist-packages (from requests<3,>=2.21.0->tensorflow) (2.5.0)
+Requirement already satisfied: certifi>=2017.4.17 in /usr/local/lib/python3.12/dist-packages (from requests<3,>=2.21.0->tensorflow) (2026.4.22)
+Requirement already satisfied: markdown>=2.6.8 in /usr/local/lib/python3.12/dist-packages (from tensorboard~=2.20.0->tensorflow) (3.10.2)
+Requirement already satisfied: pillow in /usr/local/lib/python3.12/dist-packages (from tensorboard~=2.20.0->tensorflow) (11.3.0)
+Requirement already satisfied: tensorboard-data-server<0.8.0,>=0.7.0 in /usr/local/lib/python3.12/dist-packages (from tensorboard~=2.20.0->tensorflow) (0.7.2)
+Requirement already satisfied: werkzeug>=1.0.1 in /usr/local/lib/python3.12/dist-packages (from tensorboard~=2.20.0->tensorflow) (3.1.8)
+Requirement already satisfied: markupsafe>=2.1.1 in /usr/local/lib/python3.12/dist-packages (from werkzeug>=1.0.1->tensorboard~=2.20.0->tensorflow) (3.0.3)
+Requirement already satisfied: markdown-it-py>=2.2.0 in /usr/local/lib/python3.12/dist-packages (from rich->keras>=3.10.0->tensorflow) (4.0.0)
+Requirement already satisfied: pygments<3.0.0,>=2.13.0 in /usr/local/lib/python3.12/dist-packages (from rich->keras>=3.10.0->tensorflow) (2.20.0)
+Requirement already satisfied: mdurl~=0.1 in /usr/local/lib/python3.12/dist-packages (from markdown-it-py>=2.2.0->rich->keras>=3.10.0->tensorflow) (0.1.2)
+
+[ ]
+import tensorflow as tf
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Dropout
+
+# Build lightweight MLP model
+
+mlp_model = Sequential([
+
+    Dense(
+        32,
+        activation='relu',
+        input_shape=(20,)
+    ),
+
+    Dropout(0.2),
+
+    Dense(
+        16,
+        activation='relu'
+    ),
+
+    Dropout(0.2),
+
+    Dense(
+        1,
+        activation='sigmoid'
+    )
+])
+
+# Compile model
+
+mlp_model.compile(
+    optimizer='adam',
+    loss='binary_crossentropy',
+    metrics=['accuracy']
+)
+
+# Model summary
+
+mlp_model.summary()
+
+
+[ ]
+# Train lightweight MLP
+
+history = mlp_model.fit(
+
+    X_train_r_scaled,
+    y_train_r,
+
+    validation_split=0.2,
+
+    epochs=10,
+
+    batch_size=32,
+
+    verbose=1
+)
+Epoch 1/10
+2000/2000 ━━━━━━━━━━━━━━━━━━━━ 10s 4ms/step - accuracy: 0.9760 - loss: 0.1277 - val_accuracy: 0.9895 - val_loss: 0.0468
+Epoch 2/10
+2000/2000 ━━━━━━━━━━━━━━━━━━━━ 3s 2ms/step - accuracy: 0.9891 - loss: 0.0666 - val_accuracy: 0.9905 - val_loss: 0.0391
+Epoch 3/10
+2000/2000 ━━━━━━━━━━━━━━━━━━━━ 5s 2ms/step - accuracy: 0.9898 - loss: 0.0522 - val_accuracy: 0.9913 - val_loss: 0.0342
+Epoch 4/10
+2000/2000 ━━━━━━━━━━━━━━━━━━━━ 4s 2ms/step - accuracy: 0.9903 - loss: 0.0445 - val_accuracy: 0.9918 - val_loss: 0.0329
+Epoch 5/10
+2000/2000 ━━━━━━━━━━━━━━━━━━━━ 3s 2ms/step - accuracy: 0.9911 - loss: 0.0407 - val_accuracy: 0.9919 - val_loss: 0.0316
+Epoch 6/10
+2000/2000 ━━━━━━━━━━━━━━━━━━━━ 3s 2ms/step - accuracy: 0.9911 - loss: 0.0393 - val_accuracy: 0.9923 - val_loss: 0.0305
+Epoch 7/10
+2000/2000 ━━━━━━━━━━━━━━━━━━━━ 4s 2ms/step - accuracy: 0.9914 - loss: 0.0379 - val_accuracy: 0.9921 - val_loss: 0.0306
+Epoch 8/10
+2000/2000 ━━━━━━━━━━━━━━━━━━━━ 3s 2ms/step - accuracy: 0.9916 - loss: 0.0368 - val_accuracy: 0.9923 - val_loss: 0.0303
+Epoch 9/10
+2000/2000 ━━━━━━━━━━━━━━━━━━━━ 3s 2ms/step - accuracy: 0.9918 - loss: 0.0365 - val_accuracy: 0.9925 - val_loss: 0.0320
+Epoch 10/10
+2000/2000 ━━━━━━━━━━━━━━━━━━━━ 3s 2ms/step - accuracy: 0.9919 - loss: 0.0353 - val_accuracy: 0.9923 - val_loss: 0.0306
+
+[ ]
+from sklearn.metrics import (
+    accuracy_score,
+    precision_score,
+    recall_score,
+    f1_score
+)
+
+# Predictions
+
+y_pred_mlp = (
+    mlp_model.predict(X_test_r_scaled) > 0.5
+).astype("int32")
+
+# Metrics
+
+accuracy_mlp = accuracy_score(
+    y_test_r,
+    y_pred_mlp
+)
+
+precision_mlp = precision_score(
+    y_test_r,
+    y_pred_mlp
+)
+
+recall_mlp = recall_score(
+    y_test_r,
+    y_pred_mlp
+)
+
+f1_mlp = f1_score(
+    y_test_r,
+    y_pred_mlp
+)
+
+# Print results
+
+print(f"MLP Accuracy : {accuracy_mlp:.4f}")
+print(f"MLP Precision: {precision_mlp:.4f}")
+print(f"MLP Recall   : {recall_mlp:.4f}")
+print(f"MLP F1-Score : {f1_mlp:.4f}")
+625/625 ━━━━━━━━━━━━━━━━━━━━ 1s 2ms/step
+MLP Accuracy : 0.9922
+MLP Precision: 0.9984
+MLP Recall   : 0.9860
+MLP F1-Score : 0.9922
+
+[ ]
+# Convert model to TensorFlow Lite
+
+converter = tf.lite.TFLiteConverter.from_keras_model(
+    mlp_model
+)
+
+# Apply default optimization
+
+converter.optimizations = [
+    tf.lite.Optimize.DEFAULT
+]
+
+# Convert model
+
+tflite_model = converter.convert()
+
+# Save model
+
+with open(
+    "tinyml_ids_model.tflite",
+    "wb"
+) as f:
+    f.write(tflite_model)
+
+print("TFLite quantized model saved successfully.")
+Saved artifact at '/tmp/tmp10pdkrqv'. The following endpoints are available:
+
+* Endpoint 'serve'
+  args_0 (POSITIONAL_ONLY): TensorSpec(shape=(None, 20), dtype=tf.float32, name='keras_tensor')
+Output Type:
+  TensorSpec(shape=(None, 1), dtype=tf.float32, name=None)
+Captures:
+  135440672987024: TensorSpec(shape=(), dtype=tf.resource, name=None)
+  135440672988368: TensorSpec(shape=(), dtype=tf.resource, name=None)
+  135440672989712: TensorSpec(shape=(), dtype=tf.resource, name=None)
+  135440672987984: TensorSpec(shape=(), dtype=tf.resource, name=None)
+  135440672987792: TensorSpec(shape=(), dtype=tf.resource, name=None)
+  135440672989904: TensorSpec(shape=(), dtype=tf.resource, name=None)
+TFLite quantized model saved successfully.
+
+[ ]
+import os
+
+# Save original Keras model
+
+mlp_model.save("original_mlp_model.keras")
+
+# File sizes
+
+original_size = os.path.getsize(
+    "original_mlp_model.keras"
+) / 1024
+
+tflite_size = os.path.getsize(
+    "tinyml_ids_model.tflite"
+) / 1024
+
+# Compression ratio
+
+compression_ratio = (
+    original_size / tflite_size
+)
+
+# Print results
+
+print(f"Original Model Size : {original_size:.2f} KB")
+print(f"TFLite Model Size   : {tflite_size:.2f} KB")
+print(f"Compression Ratio   : {compression_ratio:.2f}x")
+Original Model Size : 43.41 KB
+TFLite Model Size   : 6.77 KB
+Compression Ratio   : 6.41x
+
+[ ]
+!pip install shap
+
+[ ]
+import shap
+import numpy as np
+
+# Select representative samples
+
+X_shap = X_test_r_scaled[:100]
+
+# Create SHAP explainer
+
+explainer = shap.Explainer(
+    mlp_model,
+    X_shap
+)
+
+# Compute SHAP values
+
+shap_values = explainer(X_shap)
+
+print("SHAP analysis completed.")
+PermutationExplainer explainer: 101it [00:12,  3.08it/s]                         SHAP analysis completed.
+
+
+[ ]
+# SHAP summary plot
+
+shap.summary_plot(
+    shap_values,
+    X_shap,
+    feature_names=top_features
+)
+
+
+[ ]
+import tensorflow as tf
+import numpy as np
+import time
+
+# Re-convert model directly from memory
+
+converter = tf.lite.TFLiteConverter.from_keras_model(
+    mlp_model
+)
+
+converter.optimizations = [
+    tf.lite.Optimize.DEFAULT
+]
+
+tflite_model = converter.convert()
+
+# Load interpreter from model content
+
+interpreter = tf.lite.Interpreter(
+    model_content=tflite_model
+)
+
+interpreter.allocate_tensors()
+
+# Input/output details
+
+input_details = interpreter.get_input_details()
+output_details = interpreter.get_output_details()
+
+# Prepare sample input
+
+sample_input = np.array(
+    [X_test_r_scaled[0]],
+    dtype=np.float32
+)
+
+# Warm-up
+
+interpreter.set_tensor(
+    input_details[0]['index'],
+    sample_input
+)
+
+interpreter.invoke()
+
+# Runtime profiling
+
+num_runs = 100
+
+start_time = time.time()
+
+for _ in range(num_runs):
+
+    interpreter.set_tensor(
+        input_details[0]['index'],
+        sample_input
+    )
+
+    interpreter.invoke()
+
+    output_data = interpreter.get_tensor(
+        output_details[0]['index']
+    )
+
+end_time = time.time()
+
+# Average latency
+
+avg_latency = (
+    (end_time - start_time) / num_runs
+) * 1000
+
+print(f"Average Inference Latency: {avg_latency:.4f} ms")
+
+
+[ ]
+import tensorflow as tf
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Dropout
+
+# Rebuild lightweight MLP
+
+mlp_model = Sequential([
+
+    Dense(
+        32,
+        activation='relu',
+        input_shape=(20,)
+    ),
+
+    Dropout(0.2),
+
+    Dense(
+        16,
+        activation='relu'
+    ),
+
+    Dropout(0.2),
+
+    Dense(
+        1,
+        activation='sigmoid'
+    )
+])
+
+# Compile model
+
+mlp_model.compile(
+    optimizer='adam',
+    loss='binary_crossentropy',
+    metrics=['accuracy']
+)
+
+# Quick retraining
+
+mlp_model.fit(
+    X_train_r_scaled,
+    y_train_r,
+    epochs=3,
+    batch_size=32,
+    verbose=1
+)
+
+print("Model rebuilt successfully.")
+
+
+[ ]
+import pandas as pd
+import numpy as np
+import tensorflow as tf
+
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Dropout
+
+# =========================
+# Recreate reduced dataset
+# =========================
+
+top_features = [
+    'rst_count',
+    'urg_count',
+    'AVG',
+    'Variance',
+    'Tot size',
+    'flow_duration',
+    'Std',
+    'Covariance',
+    'Header_Length',
+    'IAT',
+    'Max',
+    'Tot sum',
+    'Duration',
+    'Protocol Type',
+    'HTTPS',
+    'Number',
+    'ack_flag_number',
+    'Min',
+    'Rate',
+    'UDP'
+]
+
+# Recreate X and y
+
+X_reduced = balanced_df[top_features]
+
+y_reduced = balanced_df['binary_label']
+
+# =========================
+# Train-test split
+# =========================
+
+X_train_r, X_test_r, y_train_r, y_test_r = train_test_split(
+    X_reduced,
+    y_reduced,
+    test_size=0.2,
+    random_state=42,
+    stratify=y_reduced
+)
+
+# =========================
+# Standardization
+# =========================
+
+scaler_reduced = StandardScaler()
+
+X_train_r_scaled = scaler_reduced.fit_transform(
+    X_train_r
+)
+
+X_test_r_scaled = scaler_reduced.transform(
+    X_test_r
+)
+
+# =========================
+# Rebuild MLP model
+# =========================
+
+mlp_model = Sequential([
+
+    Dense(
+        32,
+        activation='relu',
+        input_shape=(20,)
+    ),
+
+    Dropout(0.2),
+
+    Dense(
+        16,
+        activation='relu'
+    ),
+
+    Dropout(0.2),
+
+    Dense(
+        1,
+        activation='sigmoid'
+    )
+])
+
+# Compile model
+
+mlp_model.compile(
+    optimizer='adam',
+    loss='binary_crossentropy',
+    metrics=['accuracy']
+)
+
+# =========================
+# Quick training
+# =========================
+
+mlp_model.fit(
+    X_train_r_scaled,
+    y_train_r,
+    epochs=3,
+    batch_size=32,
+    verbose=1
+)
+
+print("Recovery completed successfully.")
+
+
+[ ]
+# Top selected features
+
+top_features = [
+    'rst_count',
+    'urg_count',
+    'AVG',
+    'Variance',
+    'Tot size',
+    'flow_duration',
+    'Std',
+    'Covariance',
+    'Header_Length',
+    'IAT',
+    'Max',
+    'Tot sum',
+    'Duration',
+    'Protocol Type',
+    'HTTPS',
+    'Number',
+    'ack_flag_number',
+    'Min',
+    'Rate',
+    'UDP'
+]
+
+# Create reduced dataset
+
+X_reduced = balanced_df[top_features]
+
+y_reduced = balanced_df['binary_label']
+
+print(X_reduced.shape)
+print(y_reduced.shape)
+(100000, 20)
+(100000,)
+
+[ ]
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+
+# Train-test split
+
+X_train_r, X_test_r, y_train_r, y_test_r = train_test_split(
+    X_reduced,
+    y_reduced,
+    test_size=0.2,
+    random_state=42,
+    stratify=y_reduced
+)
+
+# Feature scaling
+
+scaler_reduced = StandardScaler()
+
+X_train_r_scaled = scaler_reduced.fit_transform(
+    X_train_r
+)
+
+X_test_r_scaled = scaler_reduced.transform(
+    X_test_r
+)
+
+print(X_train_r_scaled.shape)
+print(X_test_r_scaled.shape)
+(80000, 20)
+(20000, 20)
+
+[ ]
+import tensorflow as tf
+
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Dropout
+
+# Build lightweight TinyML MLP
+
+mlp_model = Sequential([
+
+    Dense(
+        32,
+        activation='relu',
+        input_shape=(20,)
+    ),
+
+    Dropout(0.2),
+
+    Dense(
+        16,
+        activation='relu'
+    ),
+
+    Dropout(0.2),
+
+    Dense(
+        1,
+        activation='sigmoid'
+    )
+])
+
+# Compile model
+
+mlp_model.compile(
+    optimizer='adam',
+    loss='binary_crossentropy',
+    metrics=['accuracy']
+)
+
+# Quick training
+
+history = mlp_model.fit(
+
+    X_train_r_scaled,
+    y_train_r,
+
+    epochs=3,
+
+    batch_size=32,
+
+    validation_split=0.2,
+
+    verbose=1
+)
+
+print("TinyML model rebuilt successfully.")
+Epoch 1/3
+/usr/local/lib/python3.12/dist-packages/keras/src/layers/core/dense.py:106: UserWarning: Do not pass an `input_shape`/`input_dim` argument to a layer. When using Sequential models, prefer using an `Input(shape)` object as the first layer in the model instead.
+  super().__init__(activity_regularizer=activity_regularizer, **kwargs)
+2000/2000 ━━━━━━━━━━━━━━━━━━━━ 24s 11ms/step - accuracy: 0.9827 - loss: 0.0761 - val_accuracy: 0.9906 - val_loss: 0.0381
+Epoch 2/3
+2000/2000 ━━━━━━━━━━━━━━━━━━━━ 5s 2ms/step - accuracy: 0.9894 - loss: 0.0459 - val_accuracy: 0.9914 - val_loss: 0.0352
+Epoch 3/3
+2000/2000 ━━━━━━━━━━━━━━━━━━━━ 6s 3ms/step - accuracy: 0.9902 - loss: 0.0415 - val_accuracy: 0.9917 - val_loss: 0.0335
+TinyML model rebuilt successfully.
+
+[ ]
+import tensorflow as tf
+import numpy as np
+import time
+
+# =========================
+# Convert to TFLite
+# =========================
+
+converter = tf.lite.TFLiteConverter.from_keras_model(
+    mlp_model
+)
+
+converter.optimizations = [
+    tf.lite.Optimize.DEFAULT
+]
+
+tflite_model = converter.convert()
+
+print("TFLite conversion completed.")
+
+# =========================
+# Load TFLite Interpreter
+# =========================
+
+interpreter = tf.lite.Interpreter(
+    model_content=tflite_model
+)
+
+interpreter.allocate_tensors()
+
+# =========================
+# Input / Output Details
+# =========================
+
+input_details = interpreter.get_input_details()
+output_details = interpreter.get_output_details()
+
+# =========================
+# Prepare Sample Input
+# =========================
+
+sample_input = np.array(
+    [X_test_r_scaled[0]],
+    dtype=np.float32
+)
+
+# =========================
+# Warm-up Inference
+# =========================
+
+interpreter.set_tensor(
+    input_details[0]['index'],
+    sample_input
+)
+
+interpreter.invoke()
+
+# =========================
+# Runtime Profiling
+# =========================
+
+num_runs = 100
+
+start_time = time.time()
+
+for _ in range(num_runs):
+
+    interpreter.set_tensor(
+        input_details[0]['index'],
+        sample_input
+    )
+
+    interpreter.invoke()
+
+    output_data = interpreter.get_tensor(
+        output_details[0]['index']
+    )
+
+end_time = time.time()
+
+# =========================
+# Average Latency
+# =========================
+
+avg_latency = (
+    (end_time - start_time) / num_runs
+) * 1000
+
+print(f"Average Inference Latency: {avg_latency:.4f} ms")
+Saved artifact at '/tmp/tmpomuy118c'. The following endpoints are available:
+
+* Endpoint 'serve'
+  args_0 (POSITIONAL_ONLY): TensorSpec(shape=(None, 20), dtype=tf.float32, name='keras_tensor_6')
+Output Type:
+  TensorSpec(shape=(None, 1), dtype=tf.float32, name=None)
+Captures:
+  132262342026512: TensorSpec(shape=(), dtype=tf.resource, name=None)
+  132262342027088: TensorSpec(shape=(), dtype=tf.resource, name=None)
+  132262342028240: TensorSpec(shape=(), dtype=tf.resource, name=None)
+  132262342027472: TensorSpec(shape=(), dtype=tf.resource, name=None)
+  132262342028432: TensorSpec(shape=(), dtype=tf.resource, name=None)
+  132262342026704: TensorSpec(shape=(), dtype=tf.resource, name=None)
+TFLite conversion completed.
+Average Inference Latency: 0.0093 ms
+/usr/local/lib/python3.12/dist-packages/tensorflow/lite/python/interpreter.py:457: UserWarning:     Warning: tf.lite.Interpreter is deprecated and is scheduled for deletion in
+    TF 2.20. Please use the LiteRT interpreter from the ai_edge_litert package.
+    See the [migration guide](https://ai.google.dev/edge/litert/migration)
+    for details.
+    
+  warnings.warn(_INTERPRETER_DELETION_WARNING)
+
+[ ]
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Metrics
+
+metrics = [
+    'Accuracy',
+    'Precision',
+    'Recall',
+    'F1-Score'
+]
+
+rf_scores = [
+    0.9969,
+    0.9993,
+    0.9944,
+    0.9968
+]
+
+mlp_scores = [
+    0.9922,
+    0.9984,
+    0.9860,
+    0.9922
+]
+
+# Positions
+
+x = np.arange(len(metrics))
+width = 0.35
+
+# Figure
+
+plt.figure(figsize=(8,5))
+
+plt.bar(
+    x - width/2,
+    rf_scores,
+    width,
+    label='Random Forest'
+)
+
+plt.bar(
+    x + width/2,
+    mlp_scores,
+    width,
+    label='TinyML MLP'
+)
+
+# Labels
+
+plt.xticks(x, metrics)
+
+plt.ylabel('Score')
+
+plt.ylim(0.95, 1.01)
+
+plt.title(
+    'Baseline vs TinyML IDS Performance'
+)
+
+plt.legend()
+
+plt.grid(True)
+plt.savefig(
+    "baseline_vs_tinyml_performance.png",
+    dpi=300,
+    bbox_inches='tight'
+)
+
+plt.show()
+
+New section
+
+[ ]
+import matplotlib.pyplot as plt
+
+# Model sizes
+
+model_types = [
+    'Original Model',
+    'Quantized TFLite'
+]
+
+model_sizes = [
+    43.41,
+    6.77
+]
+
+# Create figure
+
+plt.figure(figsize=(7,5))
+
+bars = plt.bar(
+    model_types,
+    model_sizes
+)
+
+# Labels
+
+plt.ylabel('Model Size (KB)')
+
+plt.title(
+    'TinyML Model Compression Comparison'
+)
+
+# Add values above bars
+
+for bar in bars:
+
+    height = bar.get_height()
+
+    plt.text(
+        bar.get_x() + bar.get_width()/2,
+        height + 1,
+        f'{height:.2f} KB',
+        ha='center'
+    )
+
+# Save figure
+
+plt.savefig(
+    "model_compression_comparison.png",
+    dpi=300,
+    bbox_inches='tight'
+)
+
+plt.show()
+
+
+[ ]
+import matplotlib.pyplot as plt
+
+# Accuracy values
+
+train_acc = history.history['accuracy']
+val_acc = history.history['val_accuracy']
+
+epochs = range(
+    1,
+    len(train_acc) + 1
+)
+
+# Create figure
+
+plt.figure(figsize=(7,5))
+
+plt.plot(
+    epochs,
+    train_acc,
+    marker='o',
+    label='Training Accuracy'
+)
+
+plt.plot(
+    epochs,
+    val_acc,
+    marker='s',
+    label='Validation Accuracy'
+)
+
+# Labels
+
+plt.xlabel('Epoch')
+
+plt.ylabel('Accuracy')
+
+plt.title(
+    'TinyML IDS Training Convergence'
+)
+
+plt.legend()
+
+plt.grid(True)
+
+# Save figure
+
+plt.savefig(
+    "training_convergence_curve.png",
+    dpi=300,
+    bbox_inches='tight'
+)
+
+plt.show()
+
+
+[ ]
+import matplotlib.pyplot as plt
+
+# Create figure
+
+fig, ax = plt.subplots(figsize=(5,8))
+
+# Remove axes
+
+ax.axis('off')
+
+# Layer descriptions
+
+layers = [
+
+    "Input Features\n(20)",
+
+    "Dense Layer\n(32 Neurons)\nReLU",
+
+    "Dropout\n(0.2)",
+
+    "Dense Layer\n(16 Neurons)\nReLU",
+
+    "Dropout\n(0.2)",
+
+    "Output Layer\n(1 Neuron)\nSigmoid"
+]
+
+# Y positions
+
+y_positions = [0.9, 0.72, 0.56, 0.40, 0.24, 0.08]
+
+# Draw boxes
+
+for layer, y in zip(layers, y_positions):
+
+    ax.text(
+        0.5,
+        y,
+        layer,
+        ha='center',
+        va='center',
+        fontsize=12,
+        bbox=dict(
+            boxstyle="round,pad=0.5",
+            edgecolor='black',
+            facecolor='lightgray'
+        )
+    )
+
+# Draw arrows
+
+for i in range(len(y_positions)-1):
+
+    ax.annotate(
+        '',
+        xy=(0.5, y_positions[i+1]+0.06),
+        xytext=(0.5, y_positions[i]-0.06),
+        arrowprops=dict(arrowstyle='->')
+    )
+
+# Title
+
+plt.title(
+    "Proposed TinyML IDS Architecture",
+    fontsize=14
+)
+
+# Save figure
+
+plt.savefig(
+    "tinyml_architecture_diagram.png",
+    dpi=300,
+    bbox_inches='tight'
+)
+
+plt.show()
+
+
+[ ]
+import shap
+import numpy as np
+
+# Select representative subset
+
+X_shap = X_test_r_scaled[:100]
+
+# Create SHAP explainer
+
+explainer = shap.Explainer(
+    mlp_model,
+    X_shap
+)
+
+# Compute SHAP values
+
+shap_values = explainer(X_shap)
+
+print("Final SHAP analysis completed.")
+PermutationExplainer explainer: 101it [00:17,  3.81it/s]                         Final SHAP analysis completed.
+
+
+[ ]
+import matplotlib.pyplot as plt
+
+# Create SHAP summary plot
+
+shap.summary_plot(
+
+    shap_values,
+
+    X_shap,
+
+    feature_names=top_features,
+
+    show=False
+)
+
+# Save figure
+
+plt.savefig(
+    "final_shap_summary_plot.png",
+    dpi=300,
+    bbox_inches='tight'
+)
+
+plt.show()
+
+
+[ ]
+import pandas as pd
+
+# Dataset description table
+
+dataset_table = pd.DataFrame({
+
+    'Item': [
+
+        'Dataset Name',
+        'Original Samples',
+        'Original Features',
+        'IDS Formulation',
+        'Balanced Samples',
+        'Benign Samples',
+        'Attack Samples',
+        'Selected Features'
+    ],
+
+    'Value': [
+
+        'CICIoT2023',
+        '5,491,971',
+        '47',
+        'Binary Classification',
+        '100,000',
+        '50,000',
+        '50,000',
+        '20'
+    ]
+})
+
+# Display table
+
+print(dataset_table)
+
+# Save table
+
+dataset_table.to_csv(
+    "dataset_description_table.csv",
+    index=False
+)
+                Item                  Value
+0       Dataset Name             CICIoT2023
+1   Original Samples              5,491,971
+2  Original Features                     47
+3    IDS Formulation  Binary Classification
+4   Balanced Samples                100,000
+5     Benign Samples                 50,000
+6     Attack Samples                 50,000
+7  Selected Features                     20
+
+[ ]
+import pandas as pd
+
+# Removed features table
+
+removed_features_table = pd.DataFrame({
+
+    'Removed Feature': [
+
+        'ece_flag_number',
+        'cwr_flag_number',
+        'SMTP',
+        'Telnet',
+        'IRC',
+        'DHCP',
+        'Drate',
+        'SSH',
+        'ARP',
+        'IPv',
+        'LLC',
+        'DNS'
+    ],
+
+    'Reason': [
+
+        'Zero variance',
+        'Zero variance',
+        'Zero variance',
+        'Zero variance',
+        'Zero variance',
+        'Zero variance',
+        'Near-zero variance',
+        'Near-zero variance',
+        'Near-zero variance',
+        'Near-zero variance',
+        'Near-zero variance',
+        'Near-zero variance'
+    ]
+})
+
+# Display table
+
+print(removed_features_table)
+
+# Save CSV
+
+removed_features_table.to_csv(
+    "removed_features_table.csv",
+    index=False
+)
+    Removed Feature              Reason
+0   ece_flag_number       Zero variance
+1   cwr_flag_number       Zero variance
+2              SMTP       Zero variance
+3            Telnet       Zero variance
+4               IRC       Zero variance
+5              DHCP       Zero variance
+6             Drate  Near-zero variance
+7               SSH  Near-zero variance
+8               ARP  Near-zero variance
+9               IPv  Near-zero variance
+10              LLC  Near-zero variance
+11              DNS  Near-zero variance
+
+[ ]
+import pandas as pd
+
+# Selected features table
+
+selected_features_table = pd.DataFrame({
+
+    'Selected Features': [
+
+        'rst_count',
+        'urg_count',
+        'AVG',
+        'Variance',
+        'Tot size',
+        'flow_duration',
+        'Std',
+        'Covariance',
+        'Header_Length',
+        'IAT',
+        'Max',
+        'Tot sum',
+        'Duration',
+        'Protocol Type',
+        'HTTPS',
+        'Number',
+        'ack_flag_number',
+        'Min',
+        'Rate',
+        'UDP'
+    ]
+})
+
+# Display table
+
+print(selected_features_table)
+
+# Save CSV
+
+selected_features_table.to_csv(
+    "selected_features_table.csv",
+    index=False
+)
+   Selected Features
+0          rst_count
+1          urg_count
+2                AVG
+3           Variance
+4           Tot size
+5      flow_duration
+6                Std
+7         Covariance
+8      Header_Length
+9                IAT
+10               Max
+11           Tot sum
+12          Duration
+13     Protocol Type
+14             HTTPS
+15            Number
+16   ack_flag_number
+17               Min
+18              Rate
+19               UDP
+
+[ ]
+import pandas as pd
+
+# Experimental results table
+
+results_table = pd.DataFrame({
+
+    'Model': [
+
+        'Random Forest',
+        'TinyML MLP'
+    ],
+
+    'Accuracy': [
+
+        0.9969,
+        0.9922
+    ],
+
+    'Precision': [
+
+        0.9993,
+        0.9984
+    ],
+
+    'Recall': [
+
+        0.9944,
+        0.9860
+    ],
+
+    'F1-Score': [
+
+        0.9968,
+        0.9922
+    ]
+})
+
+# Display table
+
+print(results_table)
+
+# Save CSV
+
+results_table.to_csv(
+    "experimental_results_table.csv",
+    index=False
+)
+           Model  Accuracy  Precision  Recall  F1-Score
+0  Random Forest    0.9969     0.9993  0.9944    0.9968
+1     TinyML MLP    0.9922     0.9984  0.9860    0.9922
+
+[ ]
+import pandas as pd
+
+# Runtime and resource table
+
+resource_table = pd.DataFrame({
+
+    'Metric': [
+
+        'Original Model Size',
+        'Quantized Model Size',
+        'Compression Ratio',
+        'Trainable Parameters',
+        'Selected Features',
+        'Average Inference Latency'
+    ],
+
+    'Value': [
+
+        '43.41 KB',
+        '6.77 KB',
+        '6.41×',
+        '1,217',
+        '20',
+        '0.0093 ms'
+    ]
+})
+
+# Display table
+
+print(resource_table)
+
+# Save CSV
+
+resource_table.to_csv(
+    "runtime_resource_table.csv",
+    index=False
+)
+                      Metric      Value
+0        Original Model Size   43.41 KB
+1       Quantized Model Size    6.77 KB
+2          Compression Ratio      6.41×
+3       Trainable Parameters      1,217
+4          Selected Features         20
+5  Average Inference Latency  0.0093 ms
+
+[ ]
+import tensorflow as tf
+
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Dropout
+
+# =========================
+# Final TinyML Architecture
+# =========================
+
+mlp_model = Sequential([
+
+    Dense(
+        32,
+        activation='relu',
+        input_shape=(20,)
+    ),
+
+    Dropout(0.2),
+
+    Dense(
+        16,
+        activation='relu'
+    ),
+
+    Dropout(0.2),
+
+    Dense(
+        1,
+        activation='sigmoid'
+    )
+])
+
+# =========================
+# Compile Model
+# =========================
+
+mlp_model.compile(
+
+    optimizer='adam',
+
+    loss='binary_crossentropy',
+
+    metrics=['accuracy']
+)
+
+# =========================
+# Final Training
+# =========================
+
+history = mlp_model.fit(
+
+    X_train_r_scaled,
+    y_train_r,
+
+    epochs=10,
+
+    batch_size=32,
+
+    validation_split=0.2,
+
+    verbose=1
+)
+
+print("Final training completed.")
+/usr/local/lib/python3.12/dist-packages/keras/src/layers/core/dense.py:106: UserWarning: Do not pass an `input_shape`/`input_dim` argument to a layer. When using Sequential models, prefer using an `Input(shape)` object as the first layer in the model instead.
+  super().__init__(activity_regularizer=activity_regularizer, **kwargs)
+Epoch 1/10
+2000/2000 ━━━━━━━━━━━━━━━━━━━━ 15s 6ms/step - accuracy: 0.9810 - loss: 0.0837 - val_accuracy: 0.9897 - val_loss: 0.0458
+Epoch 2/10
+2000/2000 ━━━━━━━━━━━━━━━━━━━━ 13s 3ms/step - accuracy: 0.9893 - loss: 0.0490 - val_accuracy: 0.9911 - val_loss: 0.0369
+Epoch 3/10
+2000/2000 ━━━━━━━━━━━━━━━━━━━━ 6s 3ms/step - accuracy: 0.9902 - loss: 0.0438 - val_accuracy: 0.9911 - val_loss: 0.0362
+Epoch 4/10
+2000/2000 ━━━━━━━━━━━━━━━━━━━━ 5s 2ms/step - accuracy: 0.9906 - loss: 0.0398 - val_accuracy: 0.9921 - val_loss: 0.0328
+Epoch 5/10
+2000/2000 ━━━━━━━━━━━━━━━━━━━━ 5s 2ms/step - accuracy: 0.9911 - loss: 0.0383 - val_accuracy: 0.9924 - val_loss: 0.0323
+Epoch 6/10
+2000/2000 ━━━━━━━━━━━━━━━━━━━━ 6s 3ms/step - accuracy: 0.9917 - loss: 0.0360 - val_accuracy: 0.9923 - val_loss: 0.0314
+Epoch 7/10
+2000/2000 ━━━━━━━━━━━━━━━━━━━━ 5s 2ms/step - accuracy: 0.9919 - loss: 0.0349 - val_accuracy: 0.9921 - val_loss: 0.0306
+Epoch 8/10
+2000/2000 ━━━━━━━━━━━━━━━━━━━━ 6s 3ms/step - accuracy: 0.9918 - loss: 0.0342 - val_accuracy: 0.9920 - val_loss: 0.0308
+Epoch 9/10
+2000/2000 ━━━━━━━━━━━━━━━━━━━━ 5s 2ms/step - accuracy: 0.9917 - loss: 0.0337 - val_accuracy: 0.9924 - val_loss: 0.0304
+Epoch 10/10
+2000/2000 ━━━━━━━━━━━━━━━━━━━━ 5s 3ms/step - accuracy: 0.9920 - loss: 0.0329 - val_accuracy: 0.9923 - val_loss: 0.0301
+Final training completed.
+
+[ ]
+from sklearn.metrics import (
+    accuracy_score,
+    precision_score,
+    recall_score,
+    f1_score
+)
+
+# Predictions
+
+y_pred_prob = mlp_model.predict(
+    X_test_r_scaled
+)
+
+y_pred = (
+    y_pred_prob > 0.5
+).astype(int)
+
+# Metrics
+
+accuracy = accuracy_score(
+    y_test_r,
+    y_pred
+)
+
+precision = precision_score(
+    y_test_r,
+    y_pred
+)
+
+recall = recall_score(
+    y_test_r,
+    y_pred
+)
+
+f1 = f1_score(
+    y_test_r,
+    y_pred
+)
+
+# Print results
+
+print(f"Final Accuracy : {accuracy:.4f}")
+print(f"Final Precision: {precision:.4f}")
+print(f"Final Recall   : {recall:.4f}")
+print(f"Final F1-Score : {f1:.4f}")
+625/625 ━━━━━━━━━━━━━━━━━━━━ 2s 4ms/step
+Final Accuracy : 0.9917
+Final Precision: 0.9995
+Final Recall   : 0.9838
+Final F1-Score : 0.9916
+
+[ ]
+import matplotlib.pyplot as plt
+
+# Accuracy values
+
+train_acc = history.history['accuracy']
+val_acc = history.history['val_accuracy']
+
+epochs = range(
+    1,
+    len(train_acc) + 1
+)
+
+# Create figure
+
+plt.figure(figsize=(7,5))
+
+plt.plot(
+    epochs,
+    train_acc,
+    marker='o',
+    label='Training Accuracy'
+)
+
+plt.plot(
+    epochs,
+    val_acc,
+    marker='s',
+    label='Validation Accuracy'
+)
+
+# Labels
+
+plt.xlabel('Epoch')
+
+plt.ylabel('Accuracy')
+
+plt.title(
+    'Final TinyML IDS Training Convergence'
+)
+
+plt.legend()
+
+plt.grid(True)
+
+# Save
+
+plt.savefig(
+    "final_training_convergence_curve.png",
+    dpi=300,
+    bbox_inches='tight'
+)
+
+plt.show()
+
+
+[ ]
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Metrics
+
+metrics = [
+    'Accuracy',
+    'Precision',
+    'Recall',
+    'F1-Score'
+]
+
+# Final scores
+
+rf_scores = [
+    0.9969,
+    0.9993,
+    0.9944,
+    0.9968
+]
+
+tinyml_scores = [
+    0.9917,
+    0.9995,
+    0.9838,
+    0.9916
+]
+
+# Positions
+
+x = np.arange(len(metrics))
+width = 0.35
+
+# Figure
+
+plt.figure(figsize=(8,5))
+
+plt.bar(
+    x - width/2,
+    rf_scores,
+    width,
+    label='Random Forest'
+)
+
+plt.bar(
+    x + width/2,
+    tinyml_scores,
+    width,
+    label='TinyML MLP'
+)
+
+# Labels
+
+plt.xticks(x, metrics)
+
+plt.ylabel('Score')
+
+plt.ylim(0.97, 1.01)
+
+plt.title(
+    'Final Baseline vs TinyML IDS Performance'
+)
+
+plt.legend()
+
+plt.grid(True)
+
+# Save figure
+
+plt.savefig(
+    "final_baseline_vs_tinyml.png",
+    dpi=300,
+    bbox_inches='tight'
+)
+
+plt.show()
+
+
+[ ]
+import tensorflow as tf
+
+# =========================
+# Final TFLite Conversion
+# =========================
+
+converter = tf.lite.TFLiteConverter.from_keras_model(
+    mlp_model
+)
+
+converter.optimizations = [
+    tf.lite.Optimize.DEFAULT
+]
+
+# Convert model
+
+tflite_model = converter.convert()
+
+# Save model
+
+with open(
+    "final_tinyml_ids_model.tflite",
+    "wb"
+) as f:
+
+    f.write(tflite_model)
+
+print("Final TFLite model saved successfully.")
+Saved artifact at '/tmp/tmp6tgg24xy'. The following endpoints are available:
+
+* Endpoint 'serve'
+  args_0 (POSITIONAL_ONLY): TensorSpec(shape=(None, 20), dtype=tf.float32, name='keras_tensor_12')
+Output Type:
+  TensorSpec(shape=(None, 1), dtype=tf.float32, name=None)
+Captures:
+  132261787884752: TensorSpec(shape=(), dtype=tf.resource, name=None)
+  132261787880912: TensorSpec(shape=(), dtype=tf.resource, name=None)
+  132261787888016: TensorSpec(shape=(), dtype=tf.resource, name=None)
+  132261787880144: TensorSpec(shape=(), dtype=tf.resource, name=None)
+  132261787887440: TensorSpec(shape=(), dtype=tf.resource, name=None)
+  132261787885712: TensorSpec(shape=(), dtype=tf.resource, name=None)
+Final TFLite model saved successfully.
+
+[ ]
+import os
+
+# Original Keras model size
+
+mlp_model.save("final_original_model.keras")
+
+original_size = os.path.getsize(
+    "final_original_model.keras"
+) / 1024
+
+# Quantized TFLite model size
+
+tflite_size = os.path.getsize(
+    "final_tinyml_ids_model.tflite"
+) / 1024
+
+# Compression ratio
+
+compression_ratio = (
+    original_size / tflite_size
+)
+
+# Print results
+
+print(
+    f"Final Original Model Size : {original_size:.2f} KB"
+)
+
+print(
+    f"Final TFLite Model Size   : {tflite_size:.2f} KB"
+)
+
+print(
+    f"Final Compression Ratio   : {compression_ratio:.2f}x"
+)
+Final Original Model Size : 43.42 KB
+Final TFLite Model Size   : 6.80 KB
+Final Compression Ratio   : 6.38x
+
+[ ]
+import tensorflow as tf
+import numpy as np
+import time
+
+# =========================
+# Load Final TFLite Model
+# =========================
+
+interpreter = tf.lite.Interpreter(
+
+    model_path="final_tinyml_ids_model.tflite"
+)
+
+interpreter.allocate_tensors()
+
+# Input / output details
+
+input_details = interpreter.get_input_details()
+
+output_details = interpreter.get_output_details()
+
+# =========================
+# Sample Input
+# =========================
+
+sample = np.array(
+
+    [X_test_r_scaled[0]],
+
+    dtype=np.float32
+)
+
+# =========================
+# Warm-up Runs
+# =========================
+
+for _ in range(10):
+
+    interpreter.set_tensor(
+        input_details[0]['index'],
+        sample
+    )
+
+    interpreter.invoke()
+
+# =========================
+# Runtime Profiling
+# =========================
+
+runs = 1000
+
+start = time.time()
+
+for _ in range(runs):
+
+    interpreter.set_tensor(
+        input_details[0]['index'],
+        sample
+    )
+
+    interpreter.invoke()
+
+end = time.time()
+
+# =========================
+# Average Latency
+# =========================
+
+latency_ms = (
+    (end - start) / runs
+) * 1000
+
+print(
+    f"Final Average Inference Latency: {latency_ms:.4f} ms"
+)
+Final Average Inference Latency: 0.0163 ms
+/usr/local/lib/python3.12/dist-packages/tensorflow/lite/python/interpreter.py:457: UserWarning:     Warning: tf.lite.Interpreter is deprecated and is scheduled for deletion in
+    TF 2.20. Please use the LiteRT interpreter from the ai_edge_litert package.
+    See the [migration guide](https://ai.google.dev/edge/litert/migration)
+    for details.
+    
+  warnings.warn(_INTERPRETER_DELETION_WARNING)
+
+[ ]
+import shap
+
+# =========================
+# SHAP Sample
+# =========================
+
+X_shap = X_test_r_scaled[:100]
+
+# =========================
+# Create Explainer
+# =========================
+
+explainer = shap.Explainer(
+
+    mlp_model,
+
+    X_shap
+)
+
+# =========================
+# Compute SHAP Values
+# =========================
+
+shap_values = explainer(
+    X_shap
+)
+
+print("Final SHAP rebuild completed.")
+PermutationExplainer explainer: 101it [00:16,  3.12it/s]                         Final SHAP rebuild completed.
+
+
+[ ]
+import matplotlib.pyplot as plt
+
+# =========================
+# SHAP Summary Plot
+# =========================
+
+shap.summary_plot(
+
+    shap_values,
+
+    X_shap,
+
+    feature_names=top_features,
+
+    show=False
+)
+
+# =========================
+# Save Figure
+# =========================
+
+plt.savefig(
+
+    "final_official_shap_plot.png",
+
+    dpi=300,
+
+    bbox_inches='tight'
+)
+
+plt.show()
+
+
+[ ]
+import pandas as pd
+
+# =========================
+# Final Dataset Table
+# =========================
+
+dataset_table = pd.DataFrame({
+
+    'Item': [
+
+        'Dataset Name',
+        'Original Samples',
+        'Original Features',
+        'IDS Formulation',
+        'Balanced Samples',
+        'Benign Samples',
+        'Attack Samples',
+        'Selected Features'
+    ],
+
+    'Value': [
+
+        'CICIoT2023',
+        '5,491,971',
+        '47',
+        'Binary Classification',
+        '100,000',
+        '50,000',
+        '50,000',
+        '20'
+    ]
+})
+
+# Display
+
+print(dataset_table)
+
+# Save
+
+dataset_table.to_csv(
+
+    "final_dataset_description_table.csv",
+
+    index=False
+)
+                Item                  Value
+0       Dataset Name             CICIoT2023
+1   Original Samples              5,491,971
+2  Original Features                     47
+3    IDS Formulation  Binary Classification
+4   Balanced Samples                100,000
+5     Benign Samples                 50,000
+6     Attack Samples                 50,000
+7  Selected Features                     20
+
+[ ]
+import pandas as pd
+
+# =========================
+# Final Removed Features
+# =========================
+
+removed_features_table = pd.DataFrame({
+
+    'Removed Feature': [
+
+        'ece_flag_number',
+        'cwr_flag_number',
+        'SMTP',
+        'Telnet',
+        'IRC',
+        'DHCP',
+        'Drate',
+        'SSH',
+        'ARP',
+        'IPv',
+        'LLC',
+        'DNS'
+    ],
+
+    'Reason': [
+
+        'Constant inactive behavior across sampled flows',
+
+        'Constant inactive behavior across sampled flows',
+
+        'No meaningful occurrence within the balanced experimental subset',
+
+        'No meaningful occurrence within the balanced experimental subset',
+
+        'No meaningful occurrence within the balanced experimental subset',
+
+        'No meaningful occurrence within the balanced experimental subset',
+
+        'Extremely low statistical variability under the adopted lightweight intrusion setting',
+
+        'Limited protocol activity under the adopted balanced traffic configuration',
+
+        'Low variability with limited discriminative contribution across sampled flows',
+
+        'Overlapping protocol-level representation with retained traffic descriptors',
+
+        'Limited protocol presence within the balanced experimental traffic subset',
+
+        'Limited activity representation within the balanced experimental subset under the adopted lightweight intrusion detection setting'
+    ]
+})
+
+# Display table
+
+print(removed_features_table)
+
+# Save table
+
+removed_features_table.to_csv(
+    "final_removed_features_table.csv",
+    index=False
+)
+    Removed Feature                                             Reason
+0   ece_flag_number    Constant inactive behavior across sampled flows
+1   cwr_flag_number    Constant inactive behavior across sampled flows
+2              SMTP  No meaningful occurrence within the balanced e...
+3            Telnet  No meaningful occurrence within the balanced e...
+4               IRC  No meaningful occurrence within the balanced e...
+5              DHCP  No meaningful occurrence within the balanced e...
+6             Drate  Extremely low statistical variability under th...
+7               SSH  Limited protocol activity under the adopted ba...
+8               ARP  Low variability with limited discriminative co...
+9               IPv  Overlapping protocol-level representation with...
+10              LLC  Limited protocol presence within the balanced ...
+11              DNS  Limited activity representation within the bal...
+
+[ ]
+import pandas as pd
+
+# =========================
+# Final Selected Features
+# =========================
+
+selected_features_table = pd.DataFrame({
+
+    'Selected Features': [
+
+        'rst_count',
+        'urg_count',
+        'AVG',
+        'Variance',
+        'Tot size',
+        'flow_duration',
+        'Std',
+        'Covariance',
+        'Header_Length',
+        'IAT',
+        'Max',
+        'Tot sum',
+        'Duration',
+        'Protocol Type',
+        'HTTPS',
+        'Number',
+        'ack_flag_number',
+        'Min',
+        'Rate',
+        'UDP'
+    ]
+})
+
+print(selected_features_table)
+
+selected_features_table.to_csv(
+    "final_selected_features_table.csv",
+    index=False
+)
+   Selected Features
+0          rst_count
+1          urg_count
+2                AVG
+3           Variance
+4           Tot size
+5      flow_duration
+6                Std
+7         Covariance
+8      Header_Length
+9                IAT
+10               Max
+11           Tot sum
+12          Duration
+13     Protocol Type
+14             HTTPS
+15            Number
+16   ack_flag_number
+17               Min
+18              Rate
+19               UDP
+
+[ ]
+import pandas as pd
+
+# =========================
+# Final Experimental Results
+# =========================
+
+results_table = pd.DataFrame({
+
+    'Model': [
+
+        'Random Forest',
+        'TinyML MLP'
+    ],
+
+    'Accuracy': [
+
+        0.9969,
+        0.9917
+    ],
+
+    'Precision': [
+
+        0.9993,
+        0.9995
+    ],
+
+    'Recall': [
+
+        0.9944,
+        0.9838
+    ],
+
+    'F1-Score': [
+
+        0.9968,
+        0.9916
+    ]
+})
+
+print(results_table)
+
+results_table.to_csv(
+    "final_experimental_results_table.csv",
+    index=False
+)
+           Model  Accuracy  Precision  Recall  F1-Score
+0  Random Forest    0.9969     0.9993  0.9944    0.9968
+1     TinyML MLP    0.9917     0.9995  0.9838    0.9916
+
+[ ]
+import pandas as pd
+
+# =========================
+# Final Runtime & Resource
+# =========================
+
+resource_table = pd.DataFrame({
+
+    'Metric': [
+
+        'Original Model Size',
+        'Quantized Model Size',
+        'Compression Ratio',
+        'Trainable Parameters',
+        'Selected Features',
+        'Average Inference Latency'
+    ],
+
+    'Value': [
+
+        '43.42 KB',
+        '6.80 KB',
+        '6.38×',
+        '1,217',
+        '20',
+        '0.0163 ms'
+    ]
+})
+
+print(resource_table)
+
+resource_table.to_csv(
+    "final_runtime_resource_table.csv",
+    index=False
+)
+                      Metric      Value
+0        Original Model Size   43.42 KB
+1       Quantized Model Size    6.80 KB
+2          Compression Ratio      6.38×
+3       Trainable Parameters      1,217
+4          Selected Features         20
+5  Average Inference Latency  0.0163 ms
+
+[ ]
+import numpy as np
+
+# =========================
+# Reshape for Conv1D
+# =========================
+
+X_train_cnn = X_train_r_scaled.reshape(
+
+    X_train_r_scaled.shape[0],
+    X_train_r_scaled.shape[1],
+    1
+)
+
+X_test_cnn = X_test_r_scaled.reshape(
+
+    X_test_r_scaled.shape[0],
+    X_test_r_scaled.shape[1],
+    1
+)
+
+# Print shapes
+
+print("Train Shape:", X_train_cnn.shape)
+
+print("Test Shape :", X_test_cnn.shape)
+Train Shape: (80000, 20, 1)
+Test Shape : (20000, 20, 1)
+
+[ ]
+import tensorflow as tf
+
+from tensorflow.keras.models import Sequential
+
+from tensorflow.keras.layers import (
+
+    Conv1D,
+    MaxPooling1D,
+    Flatten,
+    Dense,
+    Dropout
+)
+
+# =========================
+# TinyCNN Architecture
+# =========================
+
+tinycnn_model = Sequential([
+
+    Conv1D(
+
+        filters=16,
+
+        kernel_size=3,
+
+        activation='relu',
+
+        input_shape=(20,1)
+    ),
+
+    MaxPooling1D(pool_size=2),
+
+    Flatten(),
+
+    Dense(
+
+        16,
+
+        activation='relu'
+    ),
+
+    Dropout(0.2),
+
+    Dense(
+
+        1,
+
+        activation='sigmoid'
+    )
+])
+
+# =========================
+# Compile Model
+# =========================
+
+tinycnn_model.compile(
+
+    optimizer='adam',
+
+    loss='binary_crossentropy',
+
+    metrics=['accuracy']
+)
+
+# =========================
+# Model Summary
+# =========================
+
+tinycnn_model.summary()
+
+
+[ ]
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Conv1D, MaxPooling1D
+from tensorflow.keras.layers import Flatten, Dense, Dropout
+from tensorflow.keras.optimizers import Adam
+
+tinycnn = Sequential([
+    Conv1D(
+        filters=16,
+        kernel_size=3,
+        activation='relu',
+        input_shape=(20,1)
+    ),
+
+    MaxPooling1D(pool_size=2),
+
+    Flatten(),
+
+    Dense(16, activation='relu'),
+
+    Dropout(0.2),
+
+    Dense(1, activation='sigmoid')
+])
+
+tinycnn.compile(
+    optimizer=Adam(learning_rate=0.001),
+    loss='binary_crossentropy',
+    metrics=['accuracy']
+)
+
+tinycnn.summary()
+
+
+[ ]
+history = tinycnn_model.fit(
+
+    X_train_cnn,
+    y_train_r,
+
+    epochs=20,
+
+    batch_size=256,
+
+    validation_split=0.2,
+
+    verbose=1
+)
+Epoch 1/20
+250/250 ━━━━━━━━━━━━━━━━━━━━ 5s 10ms/step - accuracy: 0.9514 - loss: 0.1990 - val_accuracy: 0.9887 - val_loss: 0.0634
+Epoch 2/20
+250/250 ━━━━━━━━━━━━━━━━━━━━ 2s 9ms/step - accuracy: 0.9871 - loss: 0.0618 - val_accuracy: 0.9894 - val_loss: 0.0485
+Epoch 3/20
+250/250 ━━━━━━━━━━━━━━━━━━━━ 2s 8ms/step - accuracy: 0.9887 - loss: 0.0514 - val_accuracy: 0.9901 - val_loss: 0.0437
+Epoch 4/20
+250/250 ━━━━━━━━━━━━━━━━━━━━ 2s 10ms/step - accuracy: 0.9897 - loss: 0.0459 - val_accuracy: 0.9906 - val_loss: 0.0413
+Epoch 5/20
+250/250 ━━━━━━━━━━━━━━━━━━━━ 2s 8ms/step - accuracy: 0.9903 - loss: 0.0432 - val_accuracy: 0.9906 - val_loss: 0.0380
+Epoch 6/20
+250/250 ━━━━━━━━━━━━━━━━━━━━ 2s 5ms/step - accuracy: 0.9910 - loss: 0.0407 - val_accuracy: 0.9913 - val_loss: 0.0376
+Epoch 7/20
+250/250 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.9911 - loss: 0.0397 - val_accuracy: 0.9918 - val_loss: 0.0348
+Epoch 8/20
+250/250 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.9912 - loss: 0.0388 - val_accuracy: 0.9923 - val_loss: 0.0342
+Epoch 9/20
+250/250 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.9915 - loss: 0.0375 - val_accuracy: 0.9921 - val_loss: 0.0338
+Epoch 10/20
+250/250 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.9916 - loss: 0.0366 - val_accuracy: 0.9926 - val_loss: 0.0330
+Epoch 11/20
+250/250 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.9918 - loss: 0.0352 - val_accuracy: 0.9926 - val_loss: 0.0324
+Epoch 12/20
+250/250 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.9917 - loss: 0.0354 - val_accuracy: 0.9924 - val_loss: 0.0328
+Epoch 13/20
+250/250 ━━━━━━━━━━━━━━━━━━━━ 3s 7ms/step - accuracy: 0.9918 - loss: 0.0352 - val_accuracy: 0.9927 - val_loss: 0.0321
+Epoch 14/20
+250/250 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.9920 - loss: 0.0340 - val_accuracy: 0.9927 - val_loss: 0.0315
+Epoch 15/20
+250/250 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.9922 - loss: 0.0342 - val_accuracy: 0.9923 - val_loss: 0.0318
+Epoch 16/20
+250/250 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.9921 - loss: 0.0340 - val_accuracy: 0.9926 - val_loss: 0.0313
+Epoch 17/20
+250/250 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.9922 - loss: 0.0334 - val_accuracy: 0.9926 - val_loss: 0.0312
+Epoch 18/20
+250/250 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.9922 - loss: 0.0340 - val_accuracy: 0.9927 - val_loss: 0.0308
+Epoch 19/20
+250/250 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.9920 - loss: 0.0336 - val_accuracy: 0.9923 - val_loss: 0.0314
+Epoch 20/20
+250/250 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.9923 - loss: 0.0332 - val_accuracy: 0.9927 - val_loss: 0.0302
+
+[ ]
+from sklearn.metrics import classification_report
+from sklearn.metrics import confusion_matrix
+
+from sklearn.metrics import accuracy_score
+from sklearn.metrics import precision_score
+from sklearn.metrics import recall_score
+from sklearn.metrics import f1_score
+
+from sklearn.metrics import roc_auc_score
+from sklearn.metrics import average_precision_score
+
+
+# =========================
+# Prediction
+# =========================
+
+y_pred_prob = tinycnn_model.predict(X_test_cnn)
+
+y_pred = (y_pred_prob > 0.5).astype(int)
+
+
+# =========================
+# Metrics
+# =========================
+
+acc = accuracy_score(y_test_r, y_pred)
+
+prec = precision_score(y_test_r, y_pred)
+
+rec = recall_score(y_test_r, y_pred)
+
+f1 = f1_score(y_test_r, y_pred)
+
+roc_auc = roc_auc_score(y_test_r, y_pred_prob)
+
+pr_auc = average_precision_score(y_test_r, y_pred_prob)
+
+
+# =========================
+# Final Results
+# =========================
+
+print("\n========== TinyCNN Final Results ==========")
+
+print(f"Accuracy  : {acc:.4f}")
+print(f"Precision : {prec:.4f}")
+print(f"Recall    : {rec:.4f}")
+print(f"F1-score  : {f1:.4f}")
+print(f"ROC-AUC   : {roc_auc:.4f}")
+print(f"PR-AUC    : {pr_auc:.4f}")
+
+print("\nClassification Report:\n")
+
+print(classification_report(y_test_r, y_pred))
+
+print("\nConfusion Matrix:\n")
+
+print(confusion_matrix(y_test_r, y_pred))
+625/625 ━━━━━━━━━━━━━━━━━━━━ 2s 3ms/step
+
+========== TinyCNN Final Results ==========
+Accuracy  : 0.9921
+Precision : 0.9989
+Recall    : 0.9853
+F1-score  : 0.9920
+ROC-AUC   : 0.9981
+PR-AUC    : 0.9985
+
+Classification Report:
+
+              precision    recall  f1-score   support
+
+           0       0.99      1.00      0.99     10000
+           1       1.00      0.99      0.99     10000
+
+    accuracy                           0.99     20000
+   macro avg       0.99      0.99      0.99     20000
+weighted avg       0.99      0.99      0.99     20000
+
+
+Confusion Matrix:
+
+[[9989   11]
+ [ 147 9853]]
+
+[ ]
+import tensorflow as tf
+import numpy as np
+import os
+import time
+
+
+# =========================
+# Convert to TFLite
+# =========================
+
+converter = tf.lite.TFLiteConverter.from_keras_model(tinycnn_model)
+
+converter.optimizations = [tf.lite.Optimize.DEFAULT]
+
+tflite_model = converter.convert()
+
+
+# =========================
+# Save Model
+# =========================
+
+with open("tinycnn_model.tflite", "wb") as f:
+    f.write(tflite_model)
+
+
+# =========================
+# Model Size
+# =========================
+
+size_kb = os.path.getsize("tinycnn_model.tflite") / 1024
+
+print(f"\nQuantized TinyCNN Size: {size_kb:.2f} KB")
+
+
+# =========================
+# TFLite Runtime
+# =========================
+
+interpreter = tf.lite.Interpreter(
+    model_path="tinycnn_model.tflite"
+)
+
+interpreter.allocate_tensors()
+
+input_details = interpreter.get_input_details()
+
+output_details = interpreter.get_output_details()
+
+
+# =========================
+# Single Sample
+# =========================
+
+sample = X_test_cnn[0:1].astype(np.float32)
+
+
+# =========================
+# Latency Test
+# =========================
+
+runs = 1000
+
+start = time.time()
+
+for _ in range(runs):
+
+    interpreter.set_tensor(
+        input_details[0]['index'],
+        sample
+    )
+
+    interpreter.invoke()
+
+    output = interpreter.get_tensor(
+        output_details[0]['index']
+    )
+
+end = time.time()
+
+avg_latency_ms = ((end - start) / runs) * 1000
+
+
+print(f"Average Inference Latency: {avg_latency_ms:.4f} ms")
+Saved artifact at '/tmp/tmplxijyue0'. The following endpoints are available:
+
+* Endpoint 'serve'
+  args_0 (POSITIONAL_ONLY): TensorSpec(shape=(None, 20, 1), dtype=tf.float32, name='keras_tensor_18')
+Output Type:
+  TensorSpec(shape=(None, 1), dtype=tf.float32, name=None)
+Captures:
+  132261781522576: TensorSpec(shape=(), dtype=tf.resource, name=None)
+  132261781521616: TensorSpec(shape=(), dtype=tf.resource, name=None)
+  132261781525264: TensorSpec(shape=(), dtype=tf.resource, name=None)
+  132261781524112: TensorSpec(shape=(), dtype=tf.resource, name=None)
+  132261781528912: TensorSpec(shape=(), dtype=tf.resource, name=None)
+  132261781528720: TensorSpec(shape=(), dtype=tf.resource, name=None)
+
+Quantized TinyCNN Size: 7.27 KB
+Average Inference Latency: 0.0102 ms
+/usr/local/lib/python3.12/dist-packages/tensorflow/lite/python/interpreter.py:457: UserWarning:     Warning: tf.lite.Interpreter is deprecated and is scheduled for deletion in
+    TF 2.20. Please use the LiteRT interpreter from the ai_edge_litert package.
+    See the [migration guide](https://ai.google.dev/edge/litert/migration)
+    for details.
+    
+  warnings.warn(_INTERPRETER_DELETION_WARNING)
+
+[ ]
+import pandas as pd
+
+results_df = pd.DataFrame({
+
+    "Model": [
+        "Random Forest",
+        "MLP TinyML",
+        "TinyCNN"
+    ],
+
+    "Accuracy": [
+        0.9969,
+        0.9917,
+        0.9921
+    ],
+
+    "Precision": [
+        0.9993,
+        0.9995,
+        0.9989
+    ],
+
+    "Recall": [
+        0.9944,
+        0.9838,
+        0.9853
+    ],
+
+    "F1-score": [
+        0.9968,
+        0.9916,
+        0.9920
+    ],
+
+    "ROC-AUC": [
+        None,
+        None,
+        0.9981
+    ],
+
+    "PR-AUC": [
+        None,
+        None,
+        0.9985
+    ]
+})
+
+print(results_df)
+
+results_df.to_csv(
+    "updated_experimental_results_table.csv",
+    index=False
+)
+
+print("\nSaved: updated_experimental_results_table.csv")
+           Model  Accuracy  Precision  Recall  F1-score  ROC-AUC  PR-AUC
+0  Random Forest    0.9969     0.9993  0.9944    0.9968      NaN     NaN
+1     MLP TinyML    0.9917     0.9995  0.9838    0.9916      NaN     NaN
+2        TinyCNN    0.9921     0.9989  0.9853    0.9920   0.9981  0.9985
+
+Saved: updated_experimental_results_table.csv
+
+[ ]
+runtime_df = pd.DataFrame({
+
+    "Model": [
+        "MLP TinyML",
+        "TinyCNN"
+    ],
+
+    "Parameters": [
+        "N/A",
+        2401
+    ],
+
+    "TFLite Size (KB)": [
+        6.80,
+        7.27
+    ],
+
+    "Latency (ms)": [
+        0.0163,
+        0.0102
+    ]
+})
+
+print(runtime_df)
+
+runtime_df.to_csv(
+    "updated_runtime_resource_table.csv",
+    index=False
+)
+
+print("\nSaved: updated_runtime_resource_table.csv")
+        Model Parameters  TFLite Size (KB)  Latency (ms)
+0  MLP TinyML        N/A              6.80        0.0163
+1     TinyCNN       2401              7.27        0.0102
+
+Saved: updated_runtime_resource_table.csv
+
+[ ]
+import matplotlib.pyplot as plt
+
+models = [
+    "RF",
+    "MLP",
+    "TinyCNN"
+]
+
+accuracy = [
+    0.9969,
+    0.9917,
+    0.9921
+]
+
+f1 = [
+    0.9968,
+    0.9916,
+    0.9920
+]
+
+x = range(len(models))
+
+plt.figure(figsize=(8,5))
+
+plt.plot(
+    x,
+    accuracy,
+    marker='o',
+    linewidth=2,
+    label='Accuracy'
+)
+
+plt.plot(
+    x,
+    f1,
+    marker='s',
+    linewidth=2,
+    label='F1-score'
+)
+
+plt.xticks(x, models)
+
+plt.ylabel("Score")
+
+plt.title("Final IDS Model Comparison")
+
+plt.legend()
+
+plt.grid(True)
+
+plt.savefig(
+    "updated_baseline_vs_tinyml.png",
+    dpi=300,
+    bbox_inches='tight'
+)
+
+plt.show()
+
+print("\nSaved: updated_baseline_vs_tinyml.png")
+
+
+[ ]
+import matplotlib.pyplot as plt
+
+plt.figure(figsize=(8,5))
+
+plt.plot(
+    history.history['accuracy'],
+    label='Training Accuracy'
+)
+
+plt.plot(
+    history.history['val_accuracy'],
+    label='Validation Accuracy'
+)
+
+plt.xlabel("Epoch")
+
+plt.ylabel("Accuracy")
+
+plt.title("TinyCNN Training Convergence")
+
+plt.legend()
+
+plt.grid(True)
+
+plt.savefig(
+    "tinycnn_training_convergence_curve.png",
+    dpi=300,
+    bbox_inches='tight'
+)
+
+plt.show()
+
+print("\nSaved: tinycnn_training_convergence_curve.png")
+
+
+[ ]
+from google.colab import files
+
+files.download("updated_experimental_results_table.csv")
+
+files.download("updated_runtime_resource_table.csv")
+
+files.download("updated_baseline_vs_tinyml.png")
+
+files.download("tinycnn_training_convergence_curve.png")
+
+
+[ ]
+import matplotlib.pyplot as plt
+import numpy as np
+
+models = ['RF', 'MLP', 'TinyCNN']
+
+accuracy = [0.9969, 0.9917, 0.9921]
+
+f1 = [0.9968, 0.9916, 0.9920]
+
+roc_auc = [0.9990, 0.9970, 0.9981]
+
+x = np.arange(len(models))
+
+width = 0.25
+
+plt.figure(figsize=(9,5))
+
+plt.bar(
+    x - width,
+    accuracy,
+    width,
+    label='Accuracy'
+)
+
+plt.bar(
+    x,
+    f1,
+    width,
+    label='F1-score'
+)
+
+plt.bar(
+    x + width,
+    roc_auc,
+    width,
+    label='ROC-AUC'
+)
+
+plt.xticks(x, models)
+
+plt.ylim(0.98, 1.0)
+
+plt.ylabel("Score")
+
+plt.title("Detection Performance Comparison")
+
+plt.legend()
+
+plt.grid(axis='y')
+
+plt.savefig(
+    "journal_detection_performance.png",
+    dpi=300,
+    bbox_inches='tight'
+)
+files.download("journal_detection_performance.png")
+plt.show()
+
+
+[ ]
+import matplotlib.pyplot as plt
+import numpy as np
+
+models = ['MLP', 'TinyCNN']
+
+size = [6.80, 7.27]
+
+latency = [0.0163, 0.0102]
+
+x = np.arange(len(models))
+
+width = 0.35
+
+fig, ax1 = plt.subplots(figsize=(8,5))
+
+bars1 = ax1.bar(
+    x - width/2,
+    size,
+    width,
+    label='Size (KB)'
+)
+
+ax1.set_ylabel('TFLite Size (KB)')
+
+ax1.set_xticks(x)
+
+ax1.set_xticklabels(models)
+
+ax2 = ax1.twinx()
+
+bars2 = ax2.bar(
+    x + width/2,
+    latency,
+    width,
+    label='Latency (ms)'
+)
+
+ax2.set_ylabel('Inference Latency (ms)')
+
+plt.title("TinyML Deployment Efficiency")
+
+fig.tight_layout()
+
+plt.savefig(
+    "journal_tinyml_efficiency.png",
+    dpi=300,
+    bbox_inches='tight'
+)
+files.download("journal_tinyml_efficiency.png")
+plt.show()
+
+
+[ ]
+# ==========================================
+# TinyCNN Training Convergence Curve
+# Journal Version
+# ==========================================
+
+import matplotlib.pyplot as plt
+
+plt.figure(figsize=(8,5))
+
+# Training accuracy
+plt.plot(
+    history.history['accuracy'],
+    label='Training Accuracy'
+)
+
+# Validation accuracy
+plt.plot(
+    history.history['val_accuracy'],
+    label='Validation Accuracy'
+)
+
+# X-axis
+plt.xlabel("Epoch")
+
+# Y-axis
+plt.ylabel("Classification Accuracy")
+
+# Figure title
+plt.title("TinyCNN Training Convergence")
+
+# Legend
+plt.legend()
+
+# Grid
+plt.grid(True)
+
+# Save figure
+plt.savefig(
+    "journal_tinycnn_convergence.png",
+    dpi=300,
+    bbox_inches='tight'
+)
+
+# Show figure
+plt.show()
+files.download("journal_tinycnn_convergence.png")
+print("\nSaved: journal_tinycnn_convergence.png")
+
+
+[ ]
+# ==========================================
+# TinyML Deployment Efficiency
+# Journal Version
+# ==========================================
+
+import matplotlib.pyplot as plt
+
+models = ['MLP', 'TinyCNN']
+
+size = [6.80, 7.27]
+
+latency = [0.0163, 0.0102]
+
+
+# Create figure
+fig, axes = plt.subplots(1, 2, figsize=(10,4))
+
+
+# ==========================================
+# TFLite Size
+# ==========================================
+
+axes[0].bar(models, size)
+
+axes[0].set_ylabel("TFLite Size (KB)")
+
+axes[0].set_title("Model Size")
+
+axes[0].grid(axis='y')
+
+
+# ==========================================
+# Inference Latency
+# ==========================================
+
+axes[1].bar(models, latency)
+
+axes[1].set_ylabel("Inference Latency (ms)")
+
+axes[1].set_title("Inference Speed")
+
+axes[1].grid(axis='y')
+
+
+# ==========================================
+# Overall Figure
+# ==========================================
+
+fig.suptitle("TinyML Deployment Efficiency")
+
+plt.tight_layout()
+
+plt.savefig(
+    "final_journal_tinyml_efficiency.png",
+    dpi=300,
+    bbox_inches='tight'
+)
+
+plt.show()
+files.download("final_journal_tinyml_efficiency.png")
+print("\nSaved: final_journal_tinyml_efficiency.png")
+
+
+[ ]
+# ==========================================
+# Proposed TinyCNN TinyML IDS Architecture
+# Journal Version
+# ==========================================
+
+import matplotlib.pyplot as plt
+
+fig, ax = plt.subplots(figsize=(6,10))
+
+ax.axis('off')
+
+
+# ==========================================
+# Box Style
+# ==========================================
+
+box_style = dict(
+    boxstyle="round,pad=0.5",
+    edgecolor="black",
+    linewidth=1.5
+)
+
+
+# ==========================================
+# Input Layer
+# ==========================================
+
+ax.text(
+    0.5, 0.92,
+
+    "Input Features\n(20,1)",
+
+    ha='center',
+    va='center',
+
+    fontsize=16,
+
+    bbox=box_style
+)
+
+
+# Arrow
+ax.annotate(
+    '',
+    xy=(0.5,0.82),
+    xytext=(0.5,0.87),
+
+    arrowprops=dict(arrowstyle='->', lw=1.5)
+)
+
+
+# ==========================================
+# Conv1D Layer
+# ==========================================
+
+ax.text(
+    0.5, 0.74,
+
+    "Conv1D Layer\n(16 Filters)\nReLU",
+
+    ha='center',
+    va='center',
+
+    fontsize=16,
+
+    bbox=box_style
+)
+
+
+# Arrow
+ax.annotate(
+    '',
+    xy=(0.5,0.64),
+    xytext=(0.5,0.69),
+
+    arrowprops=dict(arrowstyle='->', lw=1.5)
+)
+
+
+# ==========================================
+# MaxPooling Layer
+# ==========================================
+
+ax.text(
+    0.5, 0.56,
+
+    "MaxPooling1D\n(Pool Size = 2)",
+
+    ha='center',
+    va='center',
+
+    fontsize=16,
+
+    bbox=box_style
+)
+
+
+# Arrow
+ax.annotate(
+    '',
+    xy=(0.5,0.46),
+    xytext=(0.5,0.51),
+
+    arrowprops=dict(arrowstyle='->', lw=1.5)
+)
+
+
+# ==========================================
+# Flatten Layer
+# ==========================================
+
+ax.text(
+    0.5, 0.38,
+
+    "Flatten Layer",
+
+    ha='center',
+    va='center',
+
+    fontsize=16,
+
+    bbox=box_style
+)
+
+
+# Arrow
+ax.annotate(
+    '',
+    xy=(0.5,0.28),
+    xytext=(0.5,0.33),
+
+    arrowprops=dict(arrowstyle='->', lw=1.5)
+)
+
+
+# ==========================================
+# Dense Layer
+# ==========================================
+
+ax.text(
+    0.5, 0.20,
+
+    "Dense Layer\n(16 Neurons)\nReLU",
+
+    ha='center',
+    va='center',
+
+    fontsize=16,
+
+    bbox=box_style
+)
+
+
+# Arrow
+ax.annotate(
+    '',
+    xy=(0.5,0.10),
+    xytext=(0.5,0.15),
+
+    arrowprops=dict(arrowstyle='->', lw=1.5)
+)
+
+
+# ==========================================
+# Output Layer
+# ==========================================
+
+ax.text(
+    0.5, 0.03,
+
+    "Output Layer\n(1 Neuron)\nSigmoid",
+
+    ha='center',
+    va='center',
+
+    fontsize=16,
+
+    bbox=box_style
+)
+
+
+# ==========================================
+# Figure Title
+# ==========================================
+
+plt.title(
+    "Proposed TinyCNN TinyML IDS Architecture",
+    fontsize=22,
+    pad=20
+)
+
+
+# ==========================================
+# Save Figure
+# ==========================================
+
+plt.savefig(
+    "proposed_tinycnn_architecture.png",
+    dpi=300,
+    bbox_inches='tight'
+)
+
+plt.show()
+files.download("proposed_tinycnn_architecture.png")
+print("\nSaved: proposed_tinycnn_architecture.png")
+
+
+[ ]
+# =========================================
+# Imports
+# =========================================
+
+import pandas as pd
+import numpy as np
+import os
+import kagglehub
+
+# =========================================
+# Download Dataset
+# =========================================
+
+path = kagglehub.dataset_download(
+    "himadri07/ciciot2023"
+)
+
+print("Dataset Path:")
+print(path)
+
+# =========================================
+# Show Files
+# =========================================
+
+print("\nFiles inside dataset folder:\n")
+
+print(os.listdir(path))
+Downloading to /root/.cache/kagglehub/datasets/himadri07/ciciot2023/1.archive...
+100%|██████████| 477M/477M [00:07<00:00, 70.2MB/s]Extracting files...
+
+Dataset Path:
+/root/.cache/kagglehub/datasets/himadri07/ciciot2023/versions/1
+
+Files inside dataset folder:
+
+['CICIOT23']
+
+[ ]
+import os
+
+dataset_folder = path + "/CICIOT23"
+
+print(
+    os.listdir(dataset_folder)
+)
+['test', 'train', 'validation']
+
+[ ]
+train_folder = dataset_folder + "/train"
+
+print(
+    os.listdir(train_folder)[:10]
+)
+['train.csv']
+
+[ ]
+# =========================================
+# Load Train Dataset
+# =========================================
+
+train_csv = train_folder + "/train.csv"
+
+df = pd.read_csv(
+    train_csv
+)
+
+# =========================
+# Verify
+# =========================
+
+print(df.shape)
+
+print(df.head())
+(5491971, 47)
+   flow_duration  Header_Length  Protocol Type  Duration       Rate  \
+0       0.000000         757.00           6.00     64.00  23.671858   
+1       0.000000          54.00           6.00     64.00   2.393046   
+2       0.033982          56.78           6.11     64.64   1.192715   
+3       0.000000           0.00          47.00     64.00   9.841972   
+4       3.944828         108.00           6.00     64.00   0.506993   
+
+       Srate  Drate  fin_flag_number  syn_flag_number  rst_flag_number  ...  \
+0  23.671858    0.0              0.0              0.0              0.0  ...   
+1   2.393046    0.0              0.0              1.0              0.0  ...   
+2   1.192715    0.0              0.0              0.0              0.0  ...   
+3   9.841972    0.0              0.0              0.0              0.0  ...   
+4   0.506993    0.0              0.0              1.0              0.0  ...   
+
+          Std  Tot size           IAT  Number   Magnitue      Radius  \
+0  538.470740    944.00  8.334058e+07     9.5  41.845546  761.456760   
+1    0.000000     54.00  8.309327e+07     9.5  10.392305    0.000000   
+2    1.727526     54.29  8.333086e+07     9.5  10.462813    2.445286   
+3    0.000000    592.00  8.370278e+07     9.5  34.409301    0.000000   
+4    0.000000     54.00  8.297270e+07     9.5  10.392305    0.000000   
+
+      Covariance  Variance  Weight                   label  
+0  305219.322301      0.95  141.55  DDoS-ACK_Fragmentation  
+1       0.000000      0.00  141.55          DDoS-SYN_Flood  
+2      16.853118      0.19  141.55       DDoS-PSHACK_Flood  
+3       0.000000      0.00  141.55      Mirai-greeth_flood  
+4       0.000000      0.00  141.55           DoS-SYN_Flood  
+
+[5 rows x 47 columns]
+
+[ ]
+# =========================================
+# Create Binary Labels
+# =========================================
+
+df['binary_label'] = df['label'].apply(
+
+    lambda x: 0 if x == 'BenignTraffic' else 1
+)
+
+# Verify
+
+print(
+    df['binary_label'].value_counts()
+)
+binary_label
+1    5362433
+0     129538
+Name: count, dtype: int64
+
+[ ]
+# =========================================
+# Create Balanced Dataset
+# =========================================
+
+# Benign samples
+
+benign_df = df[
+    df['binary_label'] == 0
+].sample(
+
+    n=50000,
+
+    random_state=42
+)
+
+# Attack samples
+
+attack_df = df[
+    df['binary_label'] == 1
+].sample(
+
+    n=50000,
+
+    random_state=42
+)
+
+# Combine
+
+balanced_df = pd.concat(
+
+    [benign_df, attack_df],
+
+    axis=0
+)
+
+# Shuffle
+
+balanced_df = balanced_df.sample(
+
+    frac=1,
+
+    random_state=42
+).reset_index(drop=True)
+
+# Verify
+
+print(
+    balanced_df['binary_label'].value_counts()
+)
+
+print("\nShape:")
+
+print(
+    balanced_df.shape
+)
+binary_label
+1    50000
+0    50000
+Name: count, dtype: int64
+
+Shape:
+(100000, 48)
+
+[ ]
+# =========================================
+# Selected Features
+# =========================================
+
+top_features = [
+
+    'rst_count',
+    'urg_count',
+    'AVG',
+    'Variance',
+    'Tot size',
+    'flow_duration',
+    'Std',
+    'Covariance',
+    'Header_Length',
+    'IAT',
+    'Max',
+    'Tot sum',
+    'Duration',
+    'Protocol Type',
+    'HTTPS',
+    'Number',
+    'ack_flag_number',
+    'Min',
+    'Rate',
+    'UDP'
+]
+
+# =========================================
+# Create X and y
+# =========================================
+
+X_reduced = balanced_df[top_features]
+
+y_reduced = balanced_df['binary_label']
+
+# =========================================
+# Verify
+# =========================================
+
+print(X_reduced.shape)
+
+print(y_reduced.shape)
+(100000, 20)
+(100000,)
+
+[ ]
+from sklearn.model_selection import train_test_split
+
+# =========================================
+# Train / Test Split
+# =========================================
+
+X_train_r, X_test_r, y_train_r, y_test_r = train_test_split(
+
+    X_reduced,
+    y_reduced,
+
+    test_size=0.2,
+
+    random_state=42,
+
+    stratify=y_reduced
+)
+
+# =========================================
+# Verify Shapes
+# =========================================
+
+print(X_train_r.shape)
+
+print(X_test_r.shape)
+
+print(y_train_r.shape)
+
+print(y_test_r.shape)
+(80000, 20)
+(20000, 20)
+(80000,)
+(20000,)
+
+[ ]
+from sklearn.preprocessing import StandardScaler
+
+# =========================================
+# Feature Scaling
+# =========================================
+
+scaler = StandardScaler()
+
+X_train_r_scaled = scaler.fit_transform(
+    X_train_r
+)
+
+X_test_r_scaled = scaler.transform(
+    X_test_r
+)
+
+# =========================================
+# Verify Shapes
+# =========================================
+
+print(X_train_r_scaled.shape)
+
+print(X_test_r_scaled.shape)
+(80000, 20)
+(20000, 20)
+
+[ ]
+import numpy as np
+
+# =========================================
+# Reshape for TinyCNN
+# =========================================
+
+X_train_cnn = X_train_r_scaled.reshape(
+
+    X_train_r_scaled.shape[0],
+    X_train_r_scaled.shape[1],
+    1
+)
+
+X_test_cnn = X_test_r_scaled.reshape(
+
+    X_test_r_scaled.shape[0],
+    X_test_r_scaled.shape[1],
+    1
+)
+
+# =========================================
+# Verify Shapes
+# =========================================
+
+print(X_train_cnn.shape)
+
+print(X_test_cnn.shape)
+(80000, 20, 1)
+(20000, 20, 1)
+
+[ ]
+import tensorflow as tf
+
+from tensorflow.keras.models import Sequential
+
+from tensorflow.keras.layers import (
+
+    Conv1D,
+    MaxPooling1D,
+    Flatten,
+    Dense,
+    Dropout
+)
+
+# =========================================
+# Official TinyCNN Architecture
+# =========================================
+
+tinycnn_model = Sequential([
+
+    Conv1D(
+
+        filters=16,
+
+        kernel_size=3,
+
+        activation='relu',
+
+        input_shape=(20,1)
+    ),
+
+    MaxPooling1D(pool_size=2),
+
+    Flatten(),
+
+    Dense(
+
+        16,
+
+        activation='relu'
+    ),
+
+    Dropout(0.2),
+
+    Dense(
+
+        1,
+
+        activation='sigmoid'
+    )
+])
+
+# =========================================
+# Compile Model
+# =========================================
+
+tinycnn_model.compile(
+
+    optimizer='adam',
+
+    loss='binary_crossentropy',
+
+    metrics=['accuracy']
+)
+
+# =========================================
+# Model Summary
+# =========================================
+
+tinycnn_model.summary()
+
+
+[ ]
+# =========================================
+# Official TinyCNN Training
+# =========================================
+
+history = tinycnn_model.fit(
+
+    X_train_cnn,
+    y_train_r,
+
+    epochs=20,
+
+    batch_size=256,
+
+    validation_split=0.2,
+
+    verbose=1
+)
+
+print("TinyCNN training completed.")
+Epoch 1/20
+250/250 ━━━━━━━━━━━━━━━━━━━━ 6s 11ms/step - accuracy: 0.9469 - loss: 0.2088 - val_accuracy: 0.9880 - val_loss: 0.0676
+Epoch 2/20
+250/250 ━━━━━━━━━━━━━━━━━━━━ 3s 10ms/step - accuracy: 0.9880 - loss: 0.0611 - val_accuracy: 0.9893 - val_loss: 0.0468
+Epoch 3/20
+250/250 ━━━━━━━━━━━━━━━━━━━━ 3s 11ms/step - accuracy: 0.9891 - loss: 0.0486 - val_accuracy: 0.9899 - val_loss: 0.0423
+Epoch 4/20
+250/250 ━━━━━━━━━━━━━━━━━━━━ 3s 13ms/step - accuracy: 0.9899 - loss: 0.0457 - val_accuracy: 0.9901 - val_loss: 0.0400
+Epoch 5/20
+250/250 ━━━━━━━━━━━━━━━━━━━━ 1s 6ms/step - accuracy: 0.9901 - loss: 0.0424 - val_accuracy: 0.9904 - val_loss: 0.0381
+Epoch 6/20
+250/250 ━━━━━━━━━━━━━━━━━━━━ 2s 5ms/step - accuracy: 0.9906 - loss: 0.0414 - val_accuracy: 0.9906 - val_loss: 0.0371
+Epoch 7/20
+250/250 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.9907 - loss: 0.0403 - val_accuracy: 0.9914 - val_loss: 0.0359
+Epoch 8/20
+250/250 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.9910 - loss: 0.0389 - val_accuracy: 0.9917 - val_loss: 0.0353
+Epoch 9/20
+250/250 ━━━━━━━━━━━━━━━━━━━━ 1s 6ms/step - accuracy: 0.9912 - loss: 0.0377 - val_accuracy: 0.9915 - val_loss: 0.0352
+Epoch 10/20
+250/250 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.9915 - loss: 0.0374 - val_accuracy: 0.9920 - val_loss: 0.0345
+Epoch 11/20
+250/250 ━━━━━━━━━━━━━━━━━━━━ 2s 8ms/step - accuracy: 0.9914 - loss: 0.0364 - val_accuracy: 0.9919 - val_loss: 0.0342
+Epoch 12/20
+250/250 ━━━━━━━━━━━━━━━━━━━━ 2s 7ms/step - accuracy: 0.9915 - loss: 0.0356 - val_accuracy: 0.9921 - val_loss: 0.0338
+Epoch 13/20
+250/250 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.9918 - loss: 0.0353 - val_accuracy: 0.9923 - val_loss: 0.0334
+Epoch 14/20
+250/250 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.9918 - loss: 0.0347 - val_accuracy: 0.9924 - val_loss: 0.0330
+Epoch 15/20
+250/250 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.9920 - loss: 0.0345 - val_accuracy: 0.9925 - val_loss: 0.0325
+Epoch 16/20
+250/250 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.9921 - loss: 0.0338 - val_accuracy: 0.9924 - val_loss: 0.0321
+Epoch 17/20
+250/250 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.9920 - loss: 0.0336 - val_accuracy: 0.9924 - val_loss: 0.0320
+Epoch 18/20
+250/250 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.9921 - loss: 0.0329 - val_accuracy: 0.9927 - val_loss: 0.0319
+Epoch 19/20
+250/250 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.9923 - loss: 0.0326 - val_accuracy: 0.9924 - val_loss: 0.0319
+Epoch 20/20
+250/250 ━━━━━━━━━━━━━━━━━━━━ 2s 7ms/step - accuracy: 0.9924 - loss: 0.0325 - val_accuracy: 0.9927 - val_loss: 0.0312
+TinyCNN training completed.
+
+[ ]
+from sklearn.metrics import (
+
+    accuracy_score,
+    precision_score,
+    recall_score,
+    f1_score
+)
+
+# =========================================
+# Predict
+# =========================================
+
+y_pred_prob = tinycnn_model.predict(
+    X_test_cnn
+)
+
+y_pred = (
+
+    y_pred_prob > 0.5
+).astype(int)
+
+# =========================================
+# Metrics
+# =========================================
+
+accuracy = accuracy_score(
+    y_test_r,
+    y_pred
+)
+
+precision = precision_score(
+    y_test_r,
+    y_pred
+)
+
+recall = recall_score(
+    y_test_r,
+    y_pred
+)
+
+f1 = f1_score(
+    y_test_r,
+    y_pred
+)
+
+# =========================================
+# Print Results
+# =========================================
+
+print("TinyCNN Accuracy :", round(accuracy,4))
+
+print("TinyCNN Precision:", round(precision,4))
+
+print("TinyCNN Recall   :", round(recall,4))
+
+print("TinyCNN F1-Score :", round(f1,4))
+625/625 ━━━━━━━━━━━━━━━━━━━━ 4s 5ms/step
+TinyCNN Accuracy : 0.9919
+TinyCNN Precision: 0.999
+TinyCNN Recall   : 0.9849
+TinyCNN F1-Score : 0.9919
+
+[ ]
+from sklearn.metrics import (
+
+    roc_auc_score,
+    average_precision_score
+)
+
+# =========================================
+# ROC-AUC
+# =========================================
+
+roc_auc = roc_auc_score(
+
+    y_test_r,
+
+    y_pred_prob
+)
+
+# =========================================
+# PR-AUC
+# =========================================
+
+pr_auc = average_precision_score(
+
+    y_test_r,
+
+    y_pred_prob
+)
+
+# =========================================
+# Print Results
+# =========================================
+
+print("TinyCNN ROC-AUC :", round(roc_auc,4))
+
+print("TinyCNN PR-AUC  :", round(pr_auc,4))
+TinyCNN ROC-AUC : 0.9979
+TinyCNN PR-AUC  : 0.9984
+
+[ ]
+# =========================================
+# TinyCNN TFLite Conversion
+# =========================================
+
+converter = tf.lite.TFLiteConverter.from_keras_model(
+
+    tinycnn_model
+)
+
+converter.optimizations = [
+
+    tf.lite.Optimize.DEFAULT
+]
+
+tflite_model = converter.convert()
+
+# =========================================
+# Save Model
+# =========================================
+
+with open(
+
+    "tinycnn_model.tflite",
+
+    "wb"
+) as f:
+
+    f.write(tflite_model)
+
+print(
+    "TinyCNN TFLite model saved successfully."
+)
+Saved artifact at '/tmp/tmpks5_5a_q'. The following endpoints are available:
+
+* Endpoint 'serve'
+  args_0 (POSITIONAL_ONLY): TensorSpec(shape=(None, 20, 1), dtype=tf.float32, name='keras_tensor_7')
+Output Type:
+  TensorSpec(shape=(None, 1), dtype=tf.float32, name=None)
+Captures:
+  131997298516688: TensorSpec(shape=(), dtype=tf.resource, name=None)
+  131997298517264: TensorSpec(shape=(), dtype=tf.resource, name=None)
+  131997298516496: TensorSpec(shape=(), dtype=tf.resource, name=None)
+  131997298518800: TensorSpec(shape=(), dtype=tf.resource, name=None)
+  131997298519760: TensorSpec(shape=(), dtype=tf.resource, name=None)
+  131997298518992: TensorSpec(shape=(), dtype=tf.resource, name=None)
+TinyCNN TFLite model saved successfully.
+
+[ ]
+# =========================================
+# Save Original TinyCNN Model
+# =========================================
+
+tinycnn_model.save(
+
+    "tinycnn_model.keras"
+)
+
+print(
+    "Original TinyCNN model saved."
+)
+Original TinyCNN model saved.
+
+[ ]
+import os
+
+# =========================================
+# Model Sizes
+# =========================================
+
+original_size = os.path.getsize(
+
+    "tinycnn_model.keras"
+) / 1024
+
+tflite_size = os.path.getsize(
+
+    "tinycnn_model.tflite"
+) / 1024
+
+compression_ratio = (
+
+    original_size / tflite_size
+)
+
+# =========================================
+# Print Results
+# =========================================
+
+print(
+
+    "Original TinyCNN Size :",
+
+    round(original_size,2),
+
+    "KB"
+)
+
+print(
+
+    "Quantized TinyCNN Size:",
+
+    round(tflite_size,2),
+
+    "KB"
+)
+
+print(
+
+    "Compression Ratio     :",
+
+    round(compression_ratio,2),
+
+    "x"
+)
+Original TinyCNN Size : 59.62 KB
+Quantized TinyCNN Size: 7.3 KB
+Compression Ratio     : 8.16 x
+
+[ ]
+import time
+import numpy as np
+
+# =========================================
+# Load TFLite Interpreter
+# =========================================
+
+interpreter = tf.lite.Interpreter(
+
+    model_path="tinycnn_model.tflite"
+)
+
+interpreter.allocate_tensors()
+
+# =========================================
+# Input / Output Details
+# =========================================
+
+input_details = interpreter.get_input_details()
+
+output_details = interpreter.get_output_details()
+
+# =========================================
+# Sample Input
+# =========================================
+
+sample = X_test_cnn[0:1].astype(np.float32)
+
+# =========================================
+# Warm-up
+# =========================================
+
+for _ in range(10):
+
+    interpreter.set_tensor(
+
+        input_details[0]['index'],
+
+        sample
+    )
+
+    interpreter.invoke()
+
+# =========================================
+# Latency Measurement
+# =========================================
+
+iterations = 1000
+
+start = time.time()
+
+for _ in range(iterations):
+
+    interpreter.set_tensor(
+
+        input_details[0]['index'],
+
+        sample
+    )
+
+    interpreter.invoke()
+
+end = time.time()
+
+latency = (
+
+    (end - start) / iterations
+) * 1000
+
+# =========================================
+# Print Result
+# =========================================
+
+print(
+
+    "TinyCNN Average Inference Latency:",
+
+    round(latency,4),
+
+    "ms"
+)
+TinyCNN Average Inference Latency: 0.0046 ms
+/usr/local/lib/python3.12/dist-packages/tensorflow/lite/python/interpreter.py:457: UserWarning:     Warning: tf.lite.Interpreter is deprecated and is scheduled for deletion in
+    TF 2.20. Please use the LiteRT interpreter from the ai_edge_litert package.
+    See the [migration guide](https://ai.google.dev/edge/litert/migration)
+    for details.
+    
+  warnings.warn(_INTERPRETER_DELETION_WARNING)
+
+[ ]
+import pandas as pd
+
+# =========================================
+# Final Comparative Results
+# =========================================
+
+comparison_table = pd.DataFrame({
+
+    'Model': [
+
+        'Random Forest',
+        'TinyML MLP',
+        'TinyCNN'
+    ],
+
+    'Accuracy': [
+
+        0.9969,
+        0.9917,
+        0.9919
+    ],
+
+    'Precision': [
+
+        0.9993,
+        0.9995,
+        0.9990
+    ],
+
+    'Recall': [
+
+        0.9944,
+        0.9838,
+        0.9849
+    ],
+
+    'F1-Score': [
+
+        0.9968,
+        0.9916,
+        0.9919
+    ],
+
+    'ROC-AUC': [
+
+        None,
+        None,
+        0.9979
+    ],
+
+    'PR-AUC': [
+
+        None,
+        None,
+        0.9984
+    ],
+
+    'Quantized Size (KB)': [
+
+        None,
+        6.80,
+        7.30
+    ],
+
+    'Latency (ms)': [
+
+        None,
+        0.0163,
+        0.0046
+    ]
+})
+
+# =========================================
+# Display
+# =========================================
+
+print(comparison_table)
+
+# =========================================
+# Save CSV
+# =========================================
+
+comparison_table.to_csv(
+
+    "final_comparative_results.csv",
+
+    index=False
+)
+
+print(
+    "\nFinal comparison table saved."
+)
+           Model  Accuracy  Precision  Recall  F1-Score  ROC-AUC  PR-AUC  \
+0  Random Forest    0.9969     0.9993  0.9944    0.9968      NaN     NaN   
+1     TinyML MLP    0.9917     0.9995  0.9838    0.9916      NaN     NaN   
+2        TinyCNN    0.9919     0.9990  0.9849    0.9919   0.9979  0.9984   
+
+   Quantized Size (KB)  Latency (ms)  
+0                  NaN           NaN  
+1                  6.8        0.0163  
+2                  7.3        0.0046  
+
+Final comparison table saved.
+
+[ ]
+import pandas as pd
+
+# =========================================
+# Final Removed Features Table
+# =========================================
+
+removed_features_table = pd.DataFrame({
+
+    'Removed Feature': [
+
+        'ece_flag_number',
+        'cwr_flag_number',
+        'SMTP',
+        'Telnet',
+        'IRC',
+        'DHCP',
+        'Drate',
+        'SSH',
+        'ARP',
+        'IPv',
+        'LLC',
+        'DNS'
+    ],
+
+    'Reason': [
+
+        'Constant inactive behavior across sampled flows',
+
+        'Constant inactive behavior across sampled flows',
+
+        'Sparse protocol occurrence within the balanced experimental subset',
+
+        'Sparse protocol occurrence within the balanced experimental subset',
+
+        'Sparse protocol occurrence within the balanced experimental subset',
+
+        'Sparse protocol occurrence within the balanced experimental subset',
+
+        'Variance below the adopted elimination threshold (variance < 1×10⁻⁴)',
+
+        'Limited protocol activity with variance below the adopted elimination threshold (variance < 1×10⁻⁴)',
+
+        'Variance below the adopted elimination threshold (variance < 1×10⁻⁴) with limited discriminative contribution',
+
+        'Overlapping protocol-level representation with retained traffic descriptors',
+
+        'Sparse protocol occurrence within the balanced experimental subset',
+
+        'Sparse protocol occurrence with limited discriminative contribution under the adopted lightweight intrusion detection setting'
+    ]
+})
+
+# =========================================
+# Display
+# =========================================
+
+print(removed_features_table)
+
+# =========================================
+# Save CSV
+# =========================================
+
+removed_features_table.to_csv(
+
+    "final_removed_features_table.csv",
+
+    index=False
+)
+
+print(
+    "\nFinal removed features table saved."
+)
+    Removed Feature                                             Reason
+0   ece_flag_number    Constant inactive behavior across sampled flows
+1   cwr_flag_number    Constant inactive behavior across sampled flows
+2              SMTP  Sparse protocol occurrence within the balanced...
+3            Telnet  Sparse protocol occurrence within the balanced...
+4               IRC  Sparse protocol occurrence within the balanced...
+5              DHCP  Sparse protocol occurrence within the balanced...
+6             Drate  Variance below the adopted elimination thresho...
+7               SSH  Limited protocol activity with variance below ...
+8               ARP  Variance below the adopted elimination thresho...
+9               IPv  Overlapping protocol-level representation with...
+10              LLC  Sparse protocol occurrence within the balanced...
+11              DNS  Sparse protocol occurrence with limited discri...
+
+Final removed features table saved.
+
+[ ]
+import numpy as np
+import pandas as pd
+import tensorflow as tf
+import random
+
+from sklearn.metrics import (
+
+    accuracy_score,
+    precision_score,
+    recall_score,
+    f1_score
+)
+
+from tensorflow.keras.models import Sequential
+
+from tensorflow.keras.layers import (
+
+    Conv1D,
+    MaxPooling1D,
+    Flatten,
+    Dense,
+    Dropout
+)
+
+# =========================================
+# Seeds
+# =========================================
+
+seeds = [42, 7, 21, 84, 123]
+
+# =========================================
+# Results Storage
+# =========================================
+
+results = []
+
+# =========================================
+# Multi-Seed Training
+# =========================================
+
+for seed in seeds:
+
+    print(f"\nRunning Seed = {seed}")
+
+    # -------------------------
+    # Set Seeds
+    # -------------------------
+
+    np.random.seed(seed)
+
+    tf.random.set_seed(seed)
+
+    random.seed(seed)
+
+    # -------------------------
+    # Rebuild Model
+    # -------------------------
+
+    model = Sequential([
+
+        Conv1D(
+
+            filters=16,
+
+            kernel_size=3,
+
+            activation='relu',
+
+            input_shape=(20,1)
+        ),
+
+        MaxPooling1D(pool_size=2),
+
+        Flatten(),
+
+        Dense(
+
+            16,
+
+            activation='relu'
+        ),
+
+        Dropout(0.2),
+
+        Dense(
+
+            1,
+
+            activation='sigmoid'
+        )
+    ])
+
+    # -------------------------
+    # Compile
+    # -------------------------
+
+    model.compile(
+
+        optimizer='adam',
+
+        loss='binary_crossentropy',
+
+        metrics=['accuracy']
+    )
+
+    # -------------------------
+    # Train
+    # -------------------------
+
+    model.fit(
+
+        X_train_cnn,
+        y_train_r,
+
+        epochs=20,
+
+        batch_size=256,
+
+        validation_split=0.2,
+
+        verbose=0
+    )
+
+    # -------------------------
+    # Predict
+    # -------------------------
+
+    y_pred_prob = model.predict(
+
+        X_test_cnn,
+
+        verbose=0
+    )
+
+    y_pred = (
+
+        y_pred_prob > 0.5
+    ).astype(int)
+
+    # -------------------------
+    # Metrics
+    # -------------------------
+
+    acc = accuracy_score(
+        y_test_r,
+        y_pred
+    )
+
+    prec = precision_score(
+        y_test_r,
+        y_pred
+    )
+
+    rec = recall_score(
+        y_test_r,
+        y_pred
+    )
+
+    f1 = f1_score(
+        y_test_r,
+        y_pred
+    )
+
+    # -------------------------
+    # Store
+    # -------------------------
+
+    results.append([
+
+        seed,
+        acc,
+        prec,
+        rec,
+        f1
+    ])
+
+# =========================================
+# DataFrame
+# =========================================
+
+results_df = pd.DataFrame(
+
+    results,
+
+    columns=[
+
+        'Seed',
+        'Accuracy',
+        'Precision',
+        'Recall',
+        'F1-Score'
+    ]
+)
+
+# =========================================
+# Display
+# =========================================
+
+print("\nMulti-Seed Results:\n")
+
+print(results_df)
+
+Running Seed = 42
+/usr/local/lib/python3.12/dist-packages/keras/src/layers/convolutional/base_conv.py:113: UserWarning: Do not pass an `input_shape`/`input_dim` argument to a layer. When using Sequential models, prefer using an `Input(shape)` object as the first layer in the model instead.
+  super().__init__(activity_regularizer=activity_regularizer, **kwargs)
+
+Running Seed = 7
+/usr/local/lib/python3.12/dist-packages/keras/src/layers/convolutional/base_conv.py:113: UserWarning: Do not pass an `input_shape`/`input_dim` argument to a layer. When using Sequential models, prefer using an `Input(shape)` object as the first layer in the model instead.
+  super().__init__(activity_regularizer=activity_regularizer, **kwargs)
+
+Running Seed = 21
+/usr/local/lib/python3.12/dist-packages/keras/src/layers/convolutional/base_conv.py:113: UserWarning: Do not pass an `input_shape`/`input_dim` argument to a layer. When using Sequential models, prefer using an `Input(shape)` object as the first layer in the model instead.
+  super().__init__(activity_regularizer=activity_regularizer, **kwargs)
+
+Running Seed = 84
+/usr/local/lib/python3.12/dist-packages/keras/src/layers/convolutional/base_conv.py:113: UserWarning: Do not pass an `input_shape`/`input_dim` argument to a layer. When using Sequential models, prefer using an `Input(shape)` object as the first layer in the model instead.
+  super().__init__(activity_regularizer=activity_regularizer, **kwargs)
+
+Running Seed = 123
+/usr/local/lib/python3.12/dist-packages/keras/src/layers/convolutional/base_conv.py:113: UserWarning: Do not pass an `input_shape`/`input_dim` argument to a layer. When using Sequential models, prefer using an `Input(shape)` object as the first layer in the model instead.
+  super().__init__(activity_regularizer=activity_regularizer, **kwargs)
+
+Multi-Seed Results:
+
+   Seed  Accuracy  Precision  Recall  F1-Score
+0    42   0.99265   0.999189  0.9861  0.992602
+1     7   0.99160   0.999593  0.9836  0.991532
+2    21   0.99215   0.999391  0.9849  0.992093
+3    84   0.99190   0.999594  0.9842  0.991837
+4   123   0.99255   0.999189  0.9859  0.992500
+
+[ ]
+      Metric    Mean     Std
+0   Accuracy  0.9922  0.0004
+1  Precision  0.9994  0.0002
+2     Recall  0.9849  0.0011
+3   F1-Score  0.9921  0.0004
+
+Multi-seed statistics table saved.
